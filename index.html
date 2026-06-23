@@ -1034,6 +1034,62 @@ border:1px solid rgba(0,229,255,.12);
 .v7-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .v7-box{padding:12px;border-radius:10px;background:rgba(255,255,255,.03)}
 @media(max-width:800px){.v7-grid{grid-template-columns:1fr}}
+  /* ===== FTUE ===== */
+
+.ftue-overlay{
+position:fixed;
+inset:0;
+z-index:20000;
+background:rgba(4,8,15,.96);
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.ftue-card{
+max-width:360px;
+width:100%;
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:14px;
+padding:24px;
+text-align:center;
+}
+
+.ftue-icon{
+font-size:52px;
+margin-bottom:12px;
+}
+
+.ftue-title{
+font:700 22px Rajdhani,sans-serif;
+color:var(--cyan);
+margin-bottom:10px;
+}
+
+.ftue-body{
+font-size:14px;
+line-height:1.6;
+margin-bottom:18px;
+color:var(--text);
+}
+
+.ftue-btn{
+width:100%;
+padding:12px;
+border-radius:8px;
+background:var(--cyan);
+color:#04141A;
+font:700 14px Rajdhani,sans-serif;
+}
+
+.ftue-skip{
+margin-top:10px;
+font-size:12px;
+color:var(--text3);
+cursor:pointer;
+}
 </style>
 /* ===== FTUE ===== */
 .ftue-overlay{
