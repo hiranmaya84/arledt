@@ -1035,7 +1035,61 @@ border:1px solid rgba(0,229,255,.12);
 .v7-box{padding:12px;border-radius:10px;background:rgba(255,255,255,.03)}
 @media(max-width:800px){.v7-grid{grid-template-columns:1fr}}
 </style>
+/* ===== FTUE ===== */
+.ftue-overlay{
+position:fixed;
+inset:0;
+z-index:20000;
+background:rgba(4,8,15,.96);
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
 
+.ftue-card{
+max-width:360px;
+width:100%;
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:14px;
+padding:24px;
+text-align:center;
+}
+
+.ftue-icon{
+font-size:52px;
+margin-bottom:12px;
+}
+
+.ftue-title{
+font:700 22px Rajdhani,sans-serif;
+color:var(--cyan);
+margin-bottom:10px;
+}
+
+.ftue-body{
+font-size:14px;
+line-height:1.6;
+margin-bottom:18px;
+color:var(--text);
+}
+
+.ftue-btn{
+width:100%;
+padding:12px;
+border-radius:8px;
+background:var(--cyan);
+color:#04141A;
+font:700 14px Rajdhani,sans-serif;
+}
+
+.ftue-skip{
+margin-top:10px;
+font-size:12px;
+color:var(--text3);
+cursor:pointer;
+}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
 <body>
@@ -1885,7 +1939,74 @@ function handleLogin(ev){
   errEl.textContent='Invalid Login ID or password. Customers: use your Customer ID and registered mobile number.';
   return false;
 }
+/* ===== FTUE ===== */
 
+const FTUE_KEY='aaradhya_customer_ftue';
+
+let ftueStep=0;
+
+const ftuePages=[
+{
+icon:'🎉',
+title:'Welcome',
+body:'Welcome to Aaradhya Rx Command. Track purchases, rewards and dues in one place.'
+},
+{
+icon:'🏆',
+title:'Rewards',
+body:'Every purchase moves you closer to exciting gifts and annual rewards.'
+},
+{
+icon:'💰',
+title:'Outstanding Balance',
+body:'Monitor your pending balance and payment status anytime.'
+},
+{
+icon:'🎁',
+title:'Offers',
+body:'Never miss special schemes, discounts and bonus offers.'
+}
+];
+
+function startFTUE(){
+
+ if(localStorage.getItem(FTUE_KEY)) return;
+
+ ftueStep=0;
+
+ document.getElementById('ftue-overlay').style.display='flex';
+
+ renderFTUE();
+}
+
+function renderFTUE(){
+
+ const p=ftuePages[ftueStep];
+
+ document.getElementById('ftue-icon').textContent=p.icon;
+ document.getElementById('ftue-title').textContent=p.title;
+ document.getElementById('ftue-body').textContent=p.body;
+}
+
+function nextFTUE(){
+
+ ftueStep++;
+
+ if(ftueStep>=ftuePages.length){
+
+   closeFTUE();
+   return;
+ }
+
+ renderFTUE();
+}
+
+function closeFTUE(){
+
+ localStorage.setItem(FTUE_KEY,'done');
+
+ document.getElementById('ftue-overlay').style.display='none';
+}
 function handleLogout(){
   AUTH=null;
   sessionStorage.removeItem(AUTH_STORAGE_KEY);
@@ -1906,6 +2027,7 @@ function enterApp(){
   if(AUTH.role==='customer'){
     navStack=['detail'];
     showDetailById(AUTH.custId);
+    setTimeout(startFTUE,800);
     document.getElementById('main-tabs').style.display='none';
     document.getElementById('nav-home').style.display='none';
     document.getElementById('nav-back').style.display='none';
@@ -3612,6 +3734,29 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(updateV10Dashboard,2
 
   </div>
 
+</div>
+    <div id="ftue-overlay" class="ftue-overlay">
+  <div class="ftue-card">
+
+    <div id="ftue-icon" class="ftue-icon">🎁</div>
+
+    <div id="ftue-title" class="ftue-title">
+      Welcome
+    </div>
+
+    <div id="ftue-body" class="ftue-body">
+      Welcome to Aaradhya Rx Command
+    </div>
+
+    <button class="ftue-btn" onclick="nextFTUE()">
+      Continue
+    </button>
+
+    <div class="ftue-skip" onclick="closeFTUE()">
+      Skip Tour
+    </div>
+
+  </div>
 </div>
 </body>
 </html>
