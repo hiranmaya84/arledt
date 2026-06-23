@@ -1090,6 +1090,21 @@ font-size:12px;
 color:var(--text3);
 cursor:pointer;
 }
+  .tour-highlight{
+position:relative;
+z-index:10001;
+box-shadow:
+0 0 0 4px #00E5FF,
+0 0 25px rgba(0,229,255,.6);
+border-radius:12px;
+animation:pulseTour 1.5s infinite;
+}
+
+@keyframes pulseTour{
+0%{box-shadow:0 0 0 4px #00E5FF;}
+50%{box-shadow:0 0 0 8px rgba(0,229,255,.4);}
+100%{box-shadow:0 0 0 4px #00E5FF;}
+}
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
@@ -1208,7 +1223,9 @@ cursor:pointer;
     <!-- receipts summary -->
     <details class="fold">
       <summary>🧾 PAYMENT RECEIPTS</summary>
-      <div id="rcpt-section"></div>
+      <div id="rcpt-section" class="ord-panel" style="margin-bottom:12px">
+        
+      </div>
     </details>
   </div>
 
@@ -1945,68 +1962,110 @@ function handleLogin(ev){
 const FTUE_KEY='aaradhya_customer_ftue';
 
 let ftueStep=0;
-
-const ftuePages=[
+const dashboardTour=[
 {
-icon:'🎉',
+target:'#customer-profile',
 title:'Welcome',
-body:'Welcome to Aaradhya Rx Command. Track purchases, rewards and dues in one place.'
+body:'This is your customer dashboard.'
 },
 {
-icon:'🏆',
-title:'Rewards',
-body:'Every purchase moves you closer to exciting gifts and annual rewards.'
+target:'#business-summary',
+title:'Business Summary',
+body:'Track your total purchases and performance here.'
 },
 {
-icon:'💰',
+target:'#outstanding-section',
 title:'Outstanding Balance',
-body:'Monitor your pending balance and payment status anytime.'
+body:'Monitor pending dues and payments.'
 },
 {
-icon:'🎁',
-title:'Offers',
-body:'Never miss special schemes, discounts and bonus offers.'
+target:'#quest-section',
+title:'Rewards',
+body:'Every purchase brings you closer to rewards.'
+},
+{
+target:'#orders-section',
+title:'Orders',
+body:'View your order history and invoices.'
+},
+{
+target:'#receipts-section',
+title:'Receipts',
+body:'Track all payments received.'
 }
 ];
 
+
 function startFTUE(){
 
- if(localStorage.getItem(FTUE_KEY)) return;
+if(localStorage.getItem(FTUE_KEY)) return;
 
- ftueStep=0;
+ftueStep=0;
 
- document.getElementById('ftue-overlay').style.display='flex';
+document
+.getElementById('ftue-overlay')
+.style.display='flex';
 
- renderFTUE();
+renderFTUE();
+
 }
-
 function renderFTUE(){
 
- const p=ftuePages[ftueStep];
+document
+.querySelectorAll('.tour-highlight')
+.forEach(el=>el.classList.remove('tour-highlight'));
 
- document.getElementById('ftue-icon').textContent=p.icon;
- document.getElementById('ftue-title').textContent=p.title;
- document.getElementById('ftue-body').textContent=p.body;
+const p=dashboardTour[ftueStep];
+
+document.getElementById('ftue-title').textContent=p.title;
+document.getElementById('ftue-body').textContent=p.body;
+
+const el=document.querySelector(p.target);
+
+if(el){
+
+el.classList.add('tour-highlight');
+
+setTimeout(()=>{
+el.scrollIntoView({
+behavior:'smooth',
+block:'center'
+});
+},300);
+
+}
+
+document.getElementById('ftue-icon').textContent=
+`${ftueStep+1}/${dashboardTour.length}`;
+
 }
 
 function nextFTUE(){
 
- ftueStep++;
+ftueStep++;
 
- if(ftueStep>=ftuePages.length){
+if(ftueStep>=dashboardTour.length){
 
-   closeFTUE();
-   return;
- }
+closeFTUE();
+return;
 
- renderFTUE();
+}
+
+renderFTUE();
 }
 
 function closeFTUE(){
 
- localStorage.setItem(FTUE_KEY,'done');
+localStorage.setItem(FTUE_KEY,'done');
 
- document.getElementById('ftue-overlay').style.display='none';
+document
+.getElementById('ftue-overlay')
+.style.display='none';
+
+document
+.querySelectorAll('.tour-highlight')
+.forEach(el=>el.classList.remove('tour-highlight'));
+
 }
 function handleLogout(){
   AUTH=null;
@@ -2346,11 +2405,14 @@ const customersInRoute =
 
    <div class="mc">
       <div class="mc-lbl">
-        OUTSTANDING
+      <div id="outstanding-section">
+            OUTSTANDING CARD
+      </div>
       </div>
 
       <div class="mc-val">
         ${fmtINR(r.outstanding)}
+        
       </div>
    </div>
 
@@ -3338,12 +3400,12 @@ function showDetailById(custId){
         <span>Generated ${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
       </div>
     </div>
-
+  <div id="quest-section">
     ${questHTML(quests,curMo)}
-
+  </div>
     ${predictHTML}
 
-    <div class="ord-panel" style="margin-bottom:12px">
+    <div id="orders-section" class="ord-panel" style="margin-bottom:12px">
       <div class="ord-hd">
         <div class="ord-hd-title">◈ PAYMENT RECEIPTS</div>
         <div style="display:flex;align-items:center;gap:10px">
@@ -3393,8 +3455,8 @@ function showDetailById(custId){
     </div>
 
     ${sOrds.length>0?`
-    <div class="ord-panel">
-      <div class="ord-hd">
+    <div id="orders-section" class="ord-panel">
+        <div class="ord-hd">
         <div class="ord-hd-title">◈ TRANSACTION LOG</div>
         <div class="ord-hd-cnt">${aCnt} RECORDS · ${fmtINR(aAmt)} TOTAL</div>
       </div>
