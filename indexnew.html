@@ -1,0 +1,4104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- build marker: date-engine-v3-strict-dd-mm-yyyy -->
+
+<title>Aaradhya Rx Command</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ TOKENS ═══════════ */
+:root{
+  --bg:       #04080F;
+  --panel:    #090E1A;
+  --panel2:   #0D1525;
+  --panel3:   #111D30;
+  --cyan:     #00E5FF;
+  --cyan2:    #00B8CC;
+  --cyan-dim: rgba(0,229,255,.08);
+  --cyan-glow:0 0 12px rgba(0,229,255,.35);
+  --amber:    #FFB800;
+  --amber2:   #CC9200;
+  --amber-glow:0 0 12px rgba(255,184,0,.35);
+  --green:    #00FF88;
+  --green2:   #00CC6A;
+  --green-glow:0 0 12px rgba(0,255,136,.3);
+  --red:      #FF2D78;
+  --red2:     #CC2460;
+  --red-glow: 0 0 12px rgba(255,45,120,.3);
+  --purple:   #B44FFF;
+  --text:     #C8D8E8;
+  --text2:    #7A8FA8;
+  --text3:    #3A5068;
+  --border:   rgba(0,229,255,.15);
+  --border2:  rgba(0,229,255,.08);
+  --r:        6px;
+  --r2:       3px;
+}
+/* ═══════════ RESET ═══════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  /* scanline overlay */
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.012) 2px,rgba(0,229,255,.012) 4px);
+}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+/* headings use Rajdhani */
+.rj{font-family:'Rajdhani',sans-serif}
+.mono{font-family:'Share Tech Mono',monospace}
+
+/* ═══════════ GRID CORNERS MIXIN (pseudo brackets) ═══════════ */
+.hud-box{position:relative}
+.hud-box::before,.hud-box::after{
+  content:'';position:absolute;width:10px;height:10px;
+  border-color:var(--cyan);border-style:solid;opacity:.5;
+}
+.hud-box::before{top:0;left:0;border-width:1.5px 0 0 1.5px}
+.hud-box::after{top:0;right:0;border-width:1.5px 1.5px 0 0}
+.hud-box-b{position:relative}
+.hud-box-b::before,.hud-box-b::after{
+  content:'';position:absolute;width:10px;height:10px;
+  border-color:var(--cyan);border-style:solid;opacity:.5;
+}
+.hud-box-b::before{bottom:0;left:0;border-width:0 0 1.5px 1.5px}
+.hud-box-b::after{bottom:0;right:0;border-width:0 1.5px 1.5px 0}
+
+/* ═══════════ TOPBAR ═══════════ */
+.topbar{
+  height:58px;padding:0 20px;display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:200;
+  background:rgba(4,8,15,.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+  box-shadow:0 1px 0 rgba(0,229,255,.08), 0 4px 24px rgba(0,0,0,.6);
+}
+/* animated cyan scan line on topbar */
+.topbar::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--cyan) 50%,transparent 100%);
+  animation:scan 3s linear infinite;opacity:.4;
+}
+@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* logo = pill cross */
+.logo-wrap{width:36px;height:36px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center}
+.logo-pill{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#00E5FF22,#00FF8822);
+  border:1.5px solid var(--cyan);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--cyan-glow);
+  position:relative;overflow:hidden;
+}
+.logo-pill span{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--cyan);letter-spacing:-0.5px}
+.logo-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:var(--cyan-glow);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+.bar-brand{flex:1;min-width:0}
+.bar-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;color:var(--cyan);letter-spacing:.5px;text-shadow:var(--cyan-glow)}
+.bar-sub{font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.bar-sub span{color:var(--cyan2);opacity:.6}
+
+.bar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* tab switcher */
+.tab-rack{display:flex;gap:2px;background:rgba(0,229,255,.05);border:1px solid var(--border2);border-radius:5px;padding:3px}
+.tab-btn{padding:5px 14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:.05em;color:var(--text3);border-radius:3px;transition:all .15s}
+.tab-btn.on{background:rgba(0,229,255,.12);color:var(--cyan);box-shadow:inset 0 0 8px rgba(0,229,255,.15)}
+/* hud buttons */
+.hbtn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:.05em;border-radius:4px;transition:all .15s;cursor:pointer}
+.hbtn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.hbtn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.hbtn-cyan{background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.4);box-shadow:var(--cyan-glow)}
+.hbtn-cyan:hover{background:rgba(0,229,255,.2)}
+
+/* ═══════════ LAYOUT ═══════════ */
+.shell{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.page{display:none}
+.page.on{display:block}
+
+/* ═══════════ PERIOD FILTER ═══════════ */
+.period-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:20px}
+.period-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-right:4px}
+.pill{padding:4px 14px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .15s;cursor:pointer}
+.pill:hover{border-color:var(--cyan);color:var(--cyan)}
+.pill.on{background:rgba(0,229,255,.1);color:var(--cyan);border-color:rgba(0,229,255,.5);box-shadow:0 0 10px rgba(0,229,255,.2)}
+
+/* ═══════════ LOADING ═══════════ */
+.loading-scr{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;gap:16px}
+
+/* ═══════════ LOGIN SCREEN ═══════════ */
+.login-scr{
+  position:fixed;inset:0;z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(0,229,255,.06), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(0,255,136,.05), transparent 40%);
+  padding:20px;
+}
+.login-card{
+  width:100%;max-width:360px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:32px 28px 26px;
+  box-shadow:0 0 40px rgba(0,229,255,.08), inset 0 1px 0 rgba(255,255,255,.03);
+  text-align:center;
+}
+.login-title{font-family:'Rajdhani',sans-serif;font-size:19px;font-weight:700;letter-spacing:.08em;color:var(--text);margin-bottom:4px}
+.login-sub{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--text3);margin-bottom:26px}
+.login-field{text-align:left;margin-bottom:14px}
+.login-field label{display:block;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text2);margin-bottom:6px}
+.login-field input{
+  width:100%;box-sizing:border-box;
+  background:var(--panel2);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  padding:11px 12px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:13px;color:var(--text);
+  outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+.login-field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.1)}
+.login-field input::placeholder{color:var(--text3)}
+.login-err{
+  text-align:left;font-size:12px;color:var(--red);
+  background:rgba(255,45,120,.08);border:1px solid rgba(255,45,120,.25);
+  border-radius:6px;padding:9px 11px;margin-bottom:14px;
+}
+.login-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));
+  color:#04141A;
+  border:none;border-radius:6px;
+  padding:12px;
+  font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;
+  cursor:pointer;
+  box-shadow:0 0 16px rgba(0,229,255,.3);
+  transition:transform .1s, box-shadow .15s;
+}
+.login-btn:hover{box-shadow:0 0 22px rgba(0,229,255,.45)}
+.login-btn:active{transform:scale(.98)}
+.login-hint{margin-top:18px;font-size:11px;color:var(--text3);line-height:1.5}
+.login-hint strong{color:var(--text2)}
+
+.hud-spinner{width:44px;height:44px;border:2px solid var(--border2);border-top-color:var(--cyan);border-radius:50%;animation:spin .6s linear infinite;box-shadow:var(--cyan-glow)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-scr .lt{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase}
+.loading-scr .ls{font-size:11px;color:var(--text3)}
+.err-bar{background:rgba(255,45,120,.08);border:1px solid rgba(255,45,120,.3);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--red);margin-bottom:18px}
+
+/* ═══════ OFFERS SECTION ═══════ */
+.offers-track{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:2px 2px 10px;
+  scrollbar-width:none;
+}
+.offers-track::-webkit-scrollbar{display:none}
+
+.offer-card{
+  flex:0 0 auto;
+  width:min(72vw,220px);
+  background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(0,229,255,.03));
+  border:1px solid rgba(0,229,255,.12);
+  border-radius:12px;
+  overflow:hidden;
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+  cursor:default;
+}
+.offer-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(0,229,255,.3);
+  box-shadow:0 6px 24px rgba(0,229,255,.1);
+}
+.offer-img-wrap{
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;
+}
+.offer-img{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .3s;
+}
+.offer-card:hover .offer-img{transform:scale(1.04)}
+.offer-img-placeholder{
+  background:rgba(0,229,255,.05);
+  border-bottom:1px solid rgba(0,229,255,.1);
+}
+.offer-body{padding:10px 12px 12px}
+.offer-name{
+  font-family:'Rajdhani',sans-serif;
+  font-size:14px;font-weight:700;
+  letter-spacing:.04em;
+  color:var(--text);
+  line-height:1.3;
+  margin-bottom:6px;
+}
+.offer-duration{
+  display:flex;align-items:center;gap:5px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:var(--amber);
+  letter-spacing:.03em;line-height:1.4;
+}
+.offer-month-tag{
+  display:inline-block;
+  margin-top:6px;
+  background:rgba(0,229,255,.08);
+  border:1px solid rgba(0,229,255,.18);
+  color:var(--cyan);
+  font-family:'Rajdhani',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:.08em;
+  border-radius:4px;padding:2px 7px;
+}
+
+/* ── Expired state ── */
+.offer-expired{opacity:.75;filter:saturate(.4)}
+.offer-img-dim .offer-img{filter:brightness(.35) grayscale(.6)}
+.offer-img-dim{position:relative}
+
+/* ── Expired badge (overlay on image) ── */
+.offer-expired-badge{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;
+  background:rgba(0,0,0,.55);
+  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:.14em;color:#ff4d6d;
+  pointer-events:none;
+}
+.oeb-icon{font-size:22px;line-height:1;display:block}
+
+/* ── Countdown badge (overlay on image) ── */
+.offer-img-wrap{position:relative}
+.offer-countdown-badge{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:6px 8px;
+  background:rgba(4,8,15,.85);
+  backdrop-filter:blur(6px);
+  font-family:'Share Tech Mono',monospace;
+  color:var(--cyan);
+  letter-spacing:.04em;
+  transition:background .3s,color .3s;
+}
+.ocd-label{font-size:9px;font-weight:700;font-family:'Rajdhani',sans-serif;letter-spacing:.12em;opacity:.8;line-height:1}
+.ocd-time{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+
+/* Warning: 1–3 days left */
+.offer-countdown-badge.ocd-warning{
+  background:rgba(255,184,0,.2);
+  color:var(--amber);
+  box-shadow:0 -1px 0 rgba(255,184,0,.3);
+}
+/* Urgent: < 24 h left */
+.offer-countdown-badge.ocd-urgent{
+  background:rgba(255,45,120,.25);
+  color:#ff4d6d;
+  box-shadow:0 -1px 0 rgba(255,45,120,.5);
+  animation:ocd-pulse 1.2s ease-in-out infinite;
+}
+@keyframes ocd-pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.6}
+}
+
+/* ═══════ LEAGUE STAY BADGES ═══════ */
+.badge-row{
+  display:flex;flex-wrap:wrap;gap:5px;
+  margin:7px 0 4px;
+}
+.league-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  border:1px solid;border-radius:20px;
+  padding:2px 8px 2px 5px;
+  font-size:11px;font-weight:600;
+  letter-spacing:.02em;
+  white-space:nowrap;
+  line-height:1.5;
+}
+.league-badge .lb-mo{
+  font-family:'Rajdhani',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:.06em;
+  opacity:.85;
+}
+.lb-more{
+  display:inline-flex;align-items:center;
+  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
+  color:var(--text3);letter-spacing:.04em;padding:2px 4px;
+}
+
+/* ═══════ CALL LOG ═══════ */
+.call-log-panel{}
+.cl-empty{padding:16px 18px;color:var(--text3);font-size:12px;text-align:center}
+.cl-entry{
+  padding:12px 18px;border-bottom:1px solid var(--border2);
+}
+.cl-entry:last-child{border-bottom:none}
+.cl-entry-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.cl-outcome{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;flex:1}
+.cl-ts{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);flex-shrink:0}
+.cl-del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px 4px;flex-shrink:0;opacity:.6;transition:opacity .15s,color .15s}
+.cl-del-btn:hover{color:var(--red);opacity:1}
+.cl-note{font-size:12px;color:var(--text2);margin-bottom:3px;line-height:1.5;padding-left:2px}
+.cl-by{font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:.03em}
+
+.call-log-add-row{padding:12px 18px;border-top:1px solid var(--border2)}
+.cl-add-btn{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,229,255,.06);border:1px dashed rgba(0,229,255,.2);
+  color:var(--cyan);border-radius:6px;padding:8px 14px;width:100%;
+  justify-content:center;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.08em;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .15s,border-color .15s;
+}
+.cl-add-btn:active{background:rgba(0,229,255,.14);border-color:var(--cyan)}
+
+.cl-loading{padding:18px;text-align:center;color:var(--text3);font-size:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.cl-spin{display:inline-block;animation:cl-spin .8s linear infinite;font-size:16px}
+@keyframes cl-spin{to{transform:rotate(360deg)}}
+.cl-warn{color:var(--amber)!important}
+
+/* ── Call Modal ── */
+.cl-modal{
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding:0 0 env(safe-area-inset-bottom);
+}
+.cl-modal-box{
+  background:#0f1929;border:1px solid var(--border);border-radius:16px 16px 0 0;
+  width:100%;max-width:520px;padding:24px 20px 28px;
+}
+.cl-modal-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;
+  letter-spacing:.05em;color:var(--cyan);margin-bottom:4px}
+.cl-modal-time{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:16px}
+.cl-field-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:.1em;color:var(--text3);margin-bottom:8px}
+.cl-outcome-row{display:flex;flex-wrap:wrap;gap:6px}
+.cl-outcome-btn{
+  padding:7px 12px;border-radius:20px;border:1px solid var(--border2);
+  background:rgba(255,255,255,.03);color:var(--text2);
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;
+}
+.cl-outcome-btn.on{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.4);color:var(--cyan)}
+.cl-notes-inp{
+  width:100%;box-sizing:border-box;background:rgba(255,255,255,.04);
+  border:1px solid var(--border2);border-radius:8px;padding:10px 12px;
+  color:var(--text);font-family:'Inter',sans-serif;font-size:13px;resize:none;
+  outline:none;transition:border-color .15s;
+}
+.cl-notes-inp:focus{border-color:rgba(0,229,255,.4)}
+.cl-modal-actions{display:flex;gap:10px;margin-top:16px}
+.cl-cancel-btn{
+  flex:1;padding:11px;border:1px solid var(--border2);border-radius:8px;
+  background:transparent;color:var(--text2);font-family:'Rajdhani',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer;
+}
+.cl-save-btn{
+  flex:2;padding:11px;border:none;border-radius:8px;
+  background:var(--cyan);color:#000;font-family:'Rajdhani',sans-serif;
+  font-size:13px;font-weight:800;letter-spacing:.08em;cursor:pointer;
+  transition:opacity .15s;
+}
+.cl-save-btn:active{opacity:.8}
+.share-btns-row{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.share-btn{
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);
+  color:var(--cyan);border-radius:6px;padding:6px 10px;
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.08em;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .15s,border-color .15s;white-space:nowrap;
+}
+.share-btn:active{background:rgba(0,229,255,.18);border-color:var(--cyan)}
+.share-btn-ledger{
+  background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.25);color:#39ff14;
+}
+.share-btn-ledger:active{background:rgba(57,255,20,.16);border-color:#39ff14}
+
+/* ═══════ SNAPSHOT WATERMARK ═══════ */
+.snap-watermark{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:16px;padding-top:12px;border-top:1px solid rgba(0,229,255,.12);
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(0,229,255,.4);
+  letter-spacing:.06em;
+}
+
+/* ═══════ LEDGER SNAPSHOT CARD ═══════ */
+.ledger-snap-card{
+  display:none;
+  width:900px;
+  background:#0b1120;
+  border:1px solid rgba(0,229,255,.18);
+  border-radius:12px;
+  padding:22px 24px 18px;
+  font-family:'Inter',sans-serif;
+  box-sizing:border-box;
+}
+.ledger-snap-hd{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(0,229,255,.12)}
+.ledger-snap-brand{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;color:rgba(0,229,255,.45);margin-bottom:4px}
+.ledger-snap-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:.1em;color:#00e5ff;margin-bottom:3px}
+.ledger-snap-sub{font-size:12px;color:var(--text2);margin-bottom:12px;letter-spacing:.02em}
+.ledger-snap-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lsm-cell{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:8px 10px}
+.lsm-lbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.1em;color:var(--text3);margin-bottom:3px}
+.lsm-val{font-family:'Share Tech Mono',monospace;font-size:14px;font-weight:600}
+.ledger-snap-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ledger-col{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;overflow:hidden}
+.ledger-col-hd{padding:10px 12px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+.ledger-col-cnt{font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--text3);font-weight:400;letter-spacing:.04em}
+.ledger-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.ledger-tbl thead th{padding:7px 10px;text-align:left;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);border-bottom:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.2)}
+.ledger-tbl tbody tr:nth-child(even){background:rgba(255,255,255,.015)}
+.ledger-tbl tbody tr:hover{background:rgba(0,229,255,.03)}
+.ledger-mono{padding:6px 10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text)}
+.ledger-amt{padding:6px 10px;text-align:right;font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:600}
+.ledger-empty{padding:14px 10px;text-align:center;color:var(--text3);font-size:11px}
+
+/* ═══════════ COLLAPSIBLE FOLD SECTIONS ═══════════ */
+.fold{
+  background:var(--panel);border-radius:var(--r);
+  border:1px solid var(--border);margin-bottom:12px;overflow:hidden;
+}
+.fold summary{
+  list-style:none;cursor:pointer;user-select:none;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;
+  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);
+  -webkit-tap-highlight-color:transparent;
+}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary::after{
+  content:'▾';font-size:12px;color:var(--text3);transition:transform .15s;
+}
+.fold[open] summary::after{transform:rotate(180deg)}
+.fold[open] summary{border-bottom:1px solid var(--border2)}
+.fold > div{padding:4px 0}
+
+/* ═══════════ SECTION PANEL ═══════════ */
+.panel{
+  background:var(--panel);border-radius:var(--r);
+  border:1px solid var(--border);margin-bottom:14px;overflow:hidden;
+  position:relative;
+}
+.panel::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.3;
+}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border2)}
+.panel-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:8px}
+.panel-tag{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.07em;padding:3px 10px;border-radius:3px;background:rgba(0,229,255,.08);color:var(--cyan2);border:1px solid var(--border2)}
+
+/* ═══════════ METRICS ═══════════ */
+.metrics-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.mc{
+  background:var(--panel);border-radius:var(--r);padding:18px 20px;
+  border:1px solid var(--border);position:relative;overflow:hidden;
+}
+.mc::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,currentColor,transparent);
+  opacity:.25;
+}
+.mc.hero{
+  background:linear-gradient(135deg,#04101F 0%,#071525 100%);
+  border-color:rgba(0,229,255,.35);
+  box-shadow:inset 0 0 30px rgba(0,229,255,.04), var(--cyan-glow);
+}
+.mc.hero::after{color:var(--cyan)}
+/* grid pattern inside hero */
+.mc.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);
+  background-size:20px 20px;pointer-events:none;
+}
+.mc-ico{font-size:18px;margin-bottom:10px;line-height:1}
+.mc-lbl{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.mc-val{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;letter-spacing:-0.01em;line-height:1;color:var(--text)}
+.mc.hero .mc-val{color:var(--cyan);font-size:26px;text-shadow:var(--cyan-glow)}
+.mc-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* ═══════════ TIER GRID ═══════════ */
+/* Tier defs */
+.tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+.tc{padding:16px 8px;text-align:center;border-right:1px solid var(--border2);position:relative;transition:background .15s;cursor:default;overflow:hidden}
+.tc:last-child{border-right:none}
+.tc:hover{background:rgba(255,255,255,.02)}
+.tc-glow{position:absolute;top:0;left:0;right:0;height:2px}
+.tc-emoji{font-size:22px;line-height:1;margin-bottom:5px;display:block}
+.tc-nm{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.tc-ct{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;letter-spacing:-0.02em;line-height:1;margin-bottom:3px}
+.tc-mn{font-size:9px;color:var(--text3);font-weight:500;letter-spacing:.03em}
+
+/* ═══════════ TOP PURCHASERS ═══════════ */
+.top-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .12s;position:relative}
+.top-row:last-child{border-bottom:none}
+.top-row:hover{background:rgba(0,229,255,.03)}
+.top-row:hover .tr-chev{color:var(--cyan);opacity:1}
+/* rank medal */
+.rank-orb{
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;flex-shrink:0;
+  border:1.5px solid;position:relative;
+}
+.rank-orb::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid;opacity:.2}
+.tr-info{flex:1;min-width:0}
+.tr-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr-meta{font-size:11px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:5px}
+.tr-right{text-align:right;flex-shrink:0}
+.tr-amt{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:.02em}
+.tr-badge{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.06em;padding:2px 9px;border-radius:2px;margin-top:4px;display:inline-block}
+.tr-chev{color:var(--text3);font-size:18px;opacity:.4;transition:all .15s;flex-shrink:0;margin-left:4px}
+
+/* inline change badges */
+.ibadge{display:inline-flex;align-items:center;gap:3px;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:2px;vertical-align:middle;margin-left:5px}
+.ibadge.up{background:rgba(0,255,136,.12);color:var(--green);border:1px solid rgba(0,255,136,.3)}
+.ibadge.dn{background:rgba(255,45,120,.1);color:var(--red);border:1px solid rgba(255,45,120,.3)}
+
+/* ═══════════ TIER CHANGE SECTION ═══════════ */
+.tc-head-up{padding:8px 18px;background:rgba(0,255,136,.06);border-bottom:1px solid rgba(0,255,136,.12);border-top:1px solid var(--border2);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:6px}
+.tc-head-dn{padding:8px 18px;background:rgba(255,45,120,.06);border-bottom:1px solid rgba(255,45,120,.12);border-top:1px solid var(--border2);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:6px}
+.tch-row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .12s}
+.tch-row:hover{background:rgba(0,229,255,.03)}
+.tch-arr{font-size:18px;width:26px;text-align:center;flex-shrink:0}
+.tch-info{flex:1;min-width:0}
+.tch-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tch-tiers{font-size:11px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tch-right{text-align:right;flex-shrink:0}
+.tch-amt{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700}
+.tch-prev{font-size:10px;color:var(--text3);margin-top:2px}
+.no-chg{padding:18px;text-align:center;font-size:12px;color:var(--text3)}
+
+/* ═══════════ PARTNERS LIST ═══════════ */
+.search-wrap{position:relative;margin-bottom:12px}
+.search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--text3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.search-inp{
+  width:100%;padding:10px 14px 10px 38px;
+  background:var(--panel);border:1px solid var(--border);border-radius:var(--r);
+  font-size:13px;font-family:'Inter',sans-serif;color:var(--text);outline:none;transition:border .15s;
+}
+.search-inp:focus{border-color:rgba(0,229,255,.5);box-shadow:0 0 0 3px rgba(0,229,255,.06)}
+.search-inp::placeholder{color:var(--text3)}
+
+.plist{background:var(--panel);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.pl-item{
+  display:flex;align-items:center;gap:12px;padding:11px 16px;
+  border-bottom:1px solid var(--border2);cursor:pointer;transition:all .12s;
+  border-left:3px solid transparent;
+}
+.pl-item:last-child{border-bottom:none}
+.pl-item:hover{background:rgba(0,229,255,.03)}
+/* avatar */
+.pl-av{
+  width:36px;height:36px;border-radius:4px;display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;flex-shrink:0;
+  border:1px solid;
+}
+.pl-info{flex:1;min-width:0}
+.pl-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-loc{font-size:11px;color:var(--text3);margin-top:1px}
+.pl-right{text-align:right;flex-shrink:0}
+.pl-amt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--cyan)}
+.pl-tier{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:2px;margin-top:3px;display:inline-block}
+
+/* ═══════════ DETAIL HERO ═══════════ */
+.det-panel{
+  background:var(--panel);border-radius:var(--r);border:1px solid var(--border);
+  border-left-width:4px;margin-bottom:12px;overflow:hidden;position:relative;
+}
+.det-panel::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);
+  background-size:28px 28px;pointer-events:none;
+}
+.det-top-bar{
+  padding:18px 20px;display:flex;align-items:center;gap:16px;
+  border-bottom:1px solid var(--border2);position:relative;
+}
+.det-avatar{
+  width:54px;height:54px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;flex-shrink:0;
+  border:1.5px solid;position:relative;
+}
+.det-avatar::after{content:'';position:absolute;inset:-4px;border-radius:8px;border:1px solid;opacity:.2}
+.det-name{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:.02em;line-height:1.1;margin-bottom:6px}
+.det-pills-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.det-tier-pill{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:2px;display:inline-flex;align-items:center;gap:5px}
+.chg-pill{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 11px;border-radius:2px;border:1px solid;display:inline-flex;align-items:center;gap:4px}
+.chg-pill.up{background:rgba(0,255,136,.1);color:var(--green);border-color:rgba(0,255,136,.3)}
+.chg-pill.dn{background:rgba(255,45,120,.1);color:var(--red);border-color:rgba(255,45,120,.3)}
+
+/* tier change banner */
+.chg-banner{display:flex;align-items:center;gap:14px;margin:0 20px 16px;padding:12px 16px;border-radius:4px;border:1px solid}
+.chg-banner.up{background:rgba(0,255,136,.06);border-color:rgba(0,255,136,.25)}
+.chg-banner.dn{background:rgba(255,45,120,.06);border-color:rgba(255,45,120,.25)}
+.chg-banner-icon{font-size:28px;flex-shrink:0}
+.chg-banner-lbl{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:.05em;margin-bottom:4px}
+.chg-banner-lbl.up{color:var(--green)}
+.chg-banner-lbl.dn{color:var(--red)}
+.chg-banner-tiers{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+
+/* info grid */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px 16px;position:relative}
+.inf{background:var(--panel2);border-radius:4px;padding:10px 13px;border:1px solid var(--border2)}
+.inf-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.inf-val{font-size:13px;font-weight:600;color:var(--text);word-break:break-word}
+.inf-val.mono{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--cyan2);letter-spacing:.04em}
+.s2{grid-column:1/-1}
+/* capsule-style contact btns */
+.cbtns{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.cbtn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;transition:filter .15s;cursor:pointer;border:1px solid}
+.cbtn:hover{filter:brightness(1.15)}
+.cbtn-call{background:rgba(0,229,255,.1);color:var(--cyan);border-color:rgba(0,229,255,.35)}
+.cbtn-wa{background:rgba(0,255,136,.1);color:var(--green);border-color:rgba(0,255,136,.3)}
+
+/* stats strip */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px 18px;position:relative}
+.st{background:var(--panel2);border-radius:4px;padding:12px 10px;text-align:center;border:1px solid var(--border2);position:relative;overflow:hidden}
+.st-bar{position:absolute;top:0;left:0;right:0;height:2px}
+.st-num{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:.01em;line-height:1;margin-bottom:4px}
+.st-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.st-diff{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;margin-top:5px;letter-spacing:.03em}
+
+/* ═══════════ QUEST CARD ═══════════ */
+.quest-panel{background:var(--panel);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:12px;position:relative}
+.quest-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--amber),transparent);opacity:.5}
+/* header */
+.qhd{display:flex;align-items:stretch;min-height:68px}
+.qhd-left{
+  flex:1;padding:14px 20px;
+  background:linear-gradient(135deg,rgba(255,184,0,.08) 0%,rgba(255,184,0,.03) 100%);
+  border-right:1px solid rgba(255,184,0,.15);
+  display:flex;align-items:center;gap:12px;
+}
+.qhd-icon{font-size:26px;line-height:1;filter:drop-shadow(0 0 8px rgba(255,184,0,.5))}
+.qhd-ttl{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);text-shadow:0 0 12px rgba(255,184,0,.4)}
+.qhd-sub{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:.03em}
+/* ring + score */
+.qhd-right{padding:14px 20px;display:flex;align-items:center;gap:14px;background:rgba(255,184,0,.04)}
+.qring-wrap{position:relative;width:54px;height:54px;flex-shrink:0}
+.qring-wrap svg{transform:rotate(-90deg)}
+.qring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--amber)}
+.qscore-num{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:var(--amber);line-height:1;text-shadow:0 0 12px rgba(255,184,0,.4)}
+.qscore-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-top:3px}
+/* quest items */
+.qi{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border2);transition:background .12s}
+.qi:last-child{border-bottom:none}
+.qi:hover{background:rgba(255,255,255,.015)}
+/* icon pill — looks like a medicine capsule */
+.qi-pill{
+  width:44px;height:44px;border-radius:22px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  position:relative;overflow:hidden;border:1px solid;
+}
+/* vertical half-split like a capsule */
+.qi-pill::before{content:'';position:absolute;top:0;bottom:0;left:0;width:50%;background:rgba(255,255,255,.04)}
+.qi-body{flex:1;min-width:0}
+.qi-name{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--text);margin-bottom:2px}
+.qi-desc{font-size:11px;color:var(--text3);margin-bottom:8px}
+/* XP bar */
+.xp-track{height:8px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden;margin-bottom:5px;position:relative}
+.xp-track::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0px,rgba(255,255,255,.04) 1px,transparent 1px,transparent 20px)}
+.xp-fill{height:100%;border-radius:1px;transition:width .6s cubic-bezier(.4,0,.2,1);position:relative}
+.xp-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:3px;background:rgba(255,255,255,.8);filter:blur(2px)}
+.xp-row{display:flex;justify-content:space-between;align-items:center}
+.xp-prog{font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:600}
+.xp-tip{font-size:10px;color:var(--text3)}
+/* status ring */
+.q-stat{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;min-width:44px}
+.q-orb{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;border:2px solid;font-family:'Rajdhani',sans-serif}
+.q-orb.done{background:rgba(0,255,136,.1);color:var(--green);border-color:rgba(0,255,136,.4);box-shadow:0 0 10px rgba(0,255,136,.25)}
+.q-orb.mid{background:rgba(255,184,0,.1);color:var(--amber);border-color:rgba(255,184,0,.4);box-shadow:0 0 10px rgba(255,184,0,.2)}
+.q-orb.low{background:rgba(255,255,255,.04);color:var(--text3);border-color:var(--border2)}
+.q-pct{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700}
+
+/* ═══════════ ORDER TABLE ═══════════ */
+.ord-panel{background:var(--panel);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.ord-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border2)}
+.ord-hd-title{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.ord-hd-cnt{font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--text3);letter-spacing:.06em}
+.ord-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.ord-tbl th{padding:8px 16px;text-align:left;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:rgba(0,0,0,.2);border-bottom:1px solid var(--border2)}
+.ord-tbl td{padding:10px 16px;border-bottom:1px solid var(--border2);color:var(--text2)}
+.ord-tbl tr:last-child td{border-bottom:none}
+.ord-tbl tr:hover td{background:rgba(0,229,255,.02)}
+.oid{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3)}
+.mo-chip{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.06em;background:rgba(0,229,255,.08);color:var(--cyan2);padding:2px 9px;border-radius:2px;border:1px solid var(--border2);display:inline-block}
+.ord-amt{text-align:right;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--cyan)}
+.tbl-more{text-align:center;padding:10px;font-size:11px;color:var(--text3);border-top:1px solid var(--border2)}
+.empty-note{text-align:center;padding:40px 20px;font-size:13px;color:var(--text3)}
+
+/* ═══════════ RECEIPTS PANEL ═══════════ */
+.rcpt-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--border2)}
+.rcpt-sum-cell{padding:14px 16px;text-align:center;border-right:1px solid var(--border2)}
+.rcpt-sum-cell:last-child{border-right:none}
+.rcpt-sum-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.rcpt-sum-val{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:.01em}
+.rcpt-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border2)}
+.rcpt-row:last-child{border-bottom:none}
+.rcpt-date{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);flex-shrink:0;min-width:86px}
+.rcpt-name{font-size:12px;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcpt-mo{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;padding:2px 7px;border-radius:2px;background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2);flex-shrink:0}
+.rcpt-amt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--green);text-align:right;flex-shrink:0;min-width:80px}
+/* outstanding badge */
+.outstanding-pill{display:inline-flex;align-items:center;gap:4px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;padding:3px 10px;border-radius:3px;background:rgba(255,45,120,.1);color:var(--red);border:1px solid rgba(255,45,120,.3)}
+.clear-pill{display:inline-flex;align-items:center;gap:4px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;padding:3px 10px;border-radius:3px;background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.25)}
+
+/* ═══════════ PREDICTION CARD ═══════════ */
+.predict-panel{background:var(--panel);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:12px;position:relative}
+.predict-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple),transparent);opacity:.5}
+.predict-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.predict-cell{padding:16px 18px;border-right:1px solid var(--border2);position:relative}
+.predict-cell:last-child{border-right:none}
+.predict-cell-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.predict-icon{font-size:18px;line-height:1}
+.predict-label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2)}
+.predict-date{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:.01em;margin-bottom:4px}
+.predict-sub{font-size:11px;color:var(--text3)}
+.predict-countdown{display:inline-flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:600;padding:3px 9px;border-radius:3px;margin-top:8px}
+.predict-countdown.soon{background:rgba(255,184,0,.1);color:var(--amber);border:1px solid rgba(255,184,0,.3)}
+.predict-countdown.overdue{background:rgba(255,45,120,.1);color:var(--red);border:1px solid rgba(255,45,120,.3)}
+.predict-countdown.normal{background:rgba(0,229,255,.08);color:var(--cyan2);border:1px solid var(--border2)}
+.predict-insufficient{padding:16px 18px;text-align:center;color:var(--text3);font-size:12px;grid-column:1/-1}
+.cadence-stat{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);margin-top:6px}
+/* 4-col metrics on wider screens */
+@media(min-width:700px){.metrics-grid-4{grid-template-columns:1.3fr 1fr 1fr 1fr}}
+
+/* ═══════════════════════════════════════
+   MOBILE BOTTOM NAV BAR
+═══════════════════════════════════════ */
+.mob-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  background:rgba(4,8,15,.98);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding:0;
+  padding-bottom:env(safe-area-inset-bottom);
+  box-shadow:0 -4px 32px rgba(0,0,0,.8);
+  /* prevent any content from painting over it */
+  isolation:isolate;
+}
+.mob-nav::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.3;animation:scan 3s linear infinite;
+}
+.mob-nav-inner{display:flex;align-items:stretch}
+.mob-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;padding:10px 6px;
+  font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;
+  color:var(--text3);transition:all .15s;border:none;background:none;cursor:pointer;
+  position:relative;
+  -webkit-tap-highlight-color:transparent;
+}
+.mob-tab::after{
+  content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+  background:var(--cyan);border-radius:0 0 2px 2px;
+  transform:scaleX(0);transition:transform .2s;
+}
+.mob-tab.on{color:var(--cyan)}
+.mob-tab.on::after{transform:scaleX(1);box-shadow:0 0 8px var(--cyan)}
+.mob-tab-icon{font-size:18px;line-height:1;transition:transform .15s}
+.mob-tab.on .mob-tab-icon{transform:scale(1.1);filter:drop-shadow(0 0 4px var(--cyan))}
+.mob-tab-sync{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--amber);border:none;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mob-tab-sync .mob-tab-icon{filter:drop-shadow(0 0 4px var(--amber))}
+.mob-tab-logout{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;color:#FF4D6D;border:none;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mob-tab-logout .mob-tab-icon{filter:drop-shadow(0 0 4px #FF4D6D)}
+
+/* ═══════════════════════════════════════
+   MOBILE TOPBAR ADJUSTMENTS
+═══════════════════════════════════════ */
+@media(max-width:600px){
+  /* Show bottom nav, hide desktop tabs + sync btn in topbar */
+  .mob-nav{display:block}
+  .tab-rack{display:none !important}
+  .desk-sync{display:none !important}
+
+  /* Stack analytics charts into one column on small screens */
+  .dash-chart-grid{grid-template-columns:1fr !important}
+
+  /* Compact topbar */
+  .topbar{height:52px;padding:0 14px;gap:10px}
+  .logo-pill{width:32px;height:32px}
+  .logo-pill span{font-size:14px}
+  .bar-title{font-size:14px;letter-spacing:.2px}
+  .bar-sub{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+  .bar-right{gap:6px}
+  .hbtn{padding:5px 10px;font-size:11px}
+
+  /* Shell — room for bottom nav */
+  .shell{padding:14px 10px 94px}
+
+  /* Metrics: hero full-width, other 2 side by side */
+  .metrics-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .metrics-grid .mc:first-child{grid-column:1/-1}
+  .mc{padding:14px 14px}
+  .mc-val{font-size:24px}
+  .mc.hero .mc-val{font-size:22px}
+  .mc-ico{font-size:16px;margin-bottom:8px}
+
+  /* Tier grid: 3 columns, wrap to 2 rows */
+  .tier-grid{grid-template-columns:repeat(3,1fr)}
+  .tc{padding:13px 6px}
+  .tc:nth-child(4){border-top:1px solid var(--border2)}
+  .tc:nth-child(5){border-top:1px solid var(--border2);border-right:none}
+  .tc-ct{font-size:26px}
+  .tc-emoji{font-size:18px}
+
+  /* Top row: tighter */
+  .top-row{padding:11px 12px;gap:10px}
+  .rank-orb{width:28px;height:28px;font-size:11px}
+  .tr-name{font-size:13px}
+  .tr-amt{font-size:14px}
+  .tr-right .tr-badge{display:none} /* hide on mobile, space is tight */
+
+  /* Tier change section */
+  .tch-row{padding:10px 12px;gap:10px}
+  .panel-hd{padding:11px 14px}
+
+  /* Search */
+  .search-inp{font-size:14px;padding:11px 12px 11px 36px}
+  .search-wrap svg{left:11px}
+
+  /* Partner list items */
+  .pl-item{padding:10px 12px;gap:10px}
+  .pl-av{width:34px;height:34px;font-size:12px}
+  .pl-name{font-size:13px}
+  .pl-amt{font-size:12px}
+
+  /* Period pills — horizontal scroll */
+  .period-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none}
+  .period-bar::-webkit-scrollbar{display:none}
+  .period-bar .period-lbl{flex-shrink:0}
+  #period-pills{flex-wrap:nowrap;flex-shrink:0}
+  .pill{white-space:nowrap;flex-shrink:0}
+
+  /* Detail page */
+  .det-top-bar{padding:14px 14px;gap:12px}
+  .det-avatar{width:46px;height:46px;font-size:17px}
+  .det-name{font-size:18px}
+  .info-grid{grid-template-columns:1fr;gap:7px;padding:0 14px 14px}
+  .stats-strip{grid-template-columns:1fr 1fr;gap:7px;padding:0 14px 14px}
+  .st{padding:10px 8px}
+  .st-num{font-size:15px}
+  .chg-banner{margin:12px 14px 0;padding:10px 12px;gap:10px}
+  .chg-banner-icon{font-size:22px}
+
+  /* Quest card */
+  .qhd{flex-direction:column}
+  .qhd-left{border-right:none;border-bottom:1px solid rgba(255,184,0,.15);padding:12px 16px}
+  .qhd-right{padding:12px 16px;border-top:none;justify-content:flex-start;gap:16px}
+  .qi{padding:12px 14px;gap:10px}
+  .qi-pill{width:38px;height:38px;font-size:17px}
+  .qi-name{font-size:13px}
+  .qi-desc{font-size:10px;margin-bottom:6px}
+  .q-stat{min-width:38px}
+  .q-orb{width:32px;height:32px;font-size:13px}
+
+  /* Order/receipt table: compact on mobile, keep all columns visible */
+  .ord-tbl th{padding:7px 10px;font-size:9px}
+  .ord-tbl td{padding:9px 10px;font-size:12px}
+  .oid{font-size:10px}
+  .ord-amt{font-size:13px}
+
+  /* Contact buttons */
+  .cbtns{gap:8px}
+  .cbtn{padding:9px 18px;font-size:13px}
+
+  /* ibadge on mobile — shorter text */
+  .ibadge{font-size:9px;padding:2px 5px}
+
+  /* Prediction panel — stack on mobile */
+  .predict-grid{grid-template-columns:1fr}
+  .predict-cell{border-right:none;border-bottom:1px solid var(--border2)}
+  .predict-cell:last-child{border-bottom:none}
+  .predict-date{font-size:18px}
+
+  /* tighter panel & fold spacing for compact mobile scroll */
+  .panel,.fold{margin-bottom:10px}
+  .panel-hd,.fold summary{padding:11px 14px}
+  .period-bar{margin-bottom:14px}
+}
+
+/* ═══════════════════════════════════════
+   TABLET (601–900px)
+═══════════════════════════════════════ */
+@media(min-width:601px) and (max-width:900px){
+  .shell{padding:18px 16px 48px}
+  .metrics-grid{grid-template-columns:1.2fr 1fr 1fr;gap:12px}
+  .tier-grid{grid-template-columns:repeat(5,1fr)}
+  .info-grid{grid-template-columns:1fr 1fr}
+  .stats-strip{grid-template-columns:repeat(4,1fr)}
+  .tab-rack{display:flex}
+}
+
+/* ═══════════════════════════════════════
+   TOUCH — larger tap targets
+═══════════════════════════════════════ */
+@media(hover:none){
+  .top-row,.pl-item,.tch-row,.ord-tbl tr{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .top-row:active,.pl-item:active,.tch-row:active{background:rgba(0,229,255,.05)!important}
+  .pill{padding:7px 16px}
+  .hbtn{min-height:38px}
+  .mob-tab{min-height:52px}
+}
+
+/* ═══════════════════════════════════════
+   SAFE AREA (notch phones)
+═══════════════════════════════════════ */
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  .mob-nav{padding-bottom:env(safe-area-inset-bottom)}
+  @media(max-width:600px){
+    .shell{padding-bottom:calc(94px + env(safe-area-inset-bottom))}
+  }
+}
+
+/* ═══════ FTUE TOUR ═══════ */
+.ftue-overlay{
+  position:fixed;inset:0;z-index:20000;
+  background:rgba(4,8,15,.96);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.ftue-card{
+  max-width:360px;width:100%;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:14px;padding:28px 24px 22px;text-align:center;
+  box-shadow:0 0 60px rgba(0,229,255,.12);
+}
+.ftue-icon{font-size:48px;margin-bottom:12px;line-height:1}
+.ftue-title{font:700 22px 'Rajdhani',sans-serif;color:var(--cyan);letter-spacing:.06em;margin-bottom:10px}
+.ftue-body{font-size:14px;line-height:1.65;margin-bottom:20px;color:var(--text)}
+.ftue-progress{display:flex;gap:5px;justify-content:center;margin-bottom:18px}
+.ftue-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background .2s}
+.ftue-dot.on{background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.ftue-btn{
+  width:100%;padding:13px;border-radius:8px;border:none;
+  background:var(--cyan);color:#04141A;
+  font:800 14px 'Rajdhani',sans-serif;letter-spacing:.1em;cursor:pointer;transition:opacity .15s;
+}
+.ftue-btn:active{opacity:.8}
+.ftue-skip{margin-top:12px;font-size:12px;color:var(--text3);cursor:pointer;letter-spacing:.04em}
+.ftue-skip:hover{color:var(--text2)}
+.tour-highlight{
+  position:relative;z-index:10001;
+  box-shadow:0 0 0 3px #00E5FF,0 0 28px rgba(0,229,255,.5) !important;
+  border-radius:12px;
+  animation:pulseTour 1.5s ease-in-out infinite;
+}
+@keyframes pulseTour{
+  0%,100%{box-shadow:0 0 0 3px #00E5FF,0 0 20px rgba(0,229,255,.4)}
+  50%    {box-shadow:0 0 0 6px rgba(0,229,255,.3),0 0 40px rgba(0,229,255,.25)}
+}
+</style>
+
+<style id="v3-upgrade">
+/* ===== V3 EXECUTIVE CRM UPGRADE ===== */
+.kpi-ribbon{
+position:sticky;top:58px;z-index:250;
+display:grid;grid-template-columns:repeat(4,1fr);
+gap:10px;padding:10px;margin-bottom:14px;
+background:rgba(4,8,15,.92);backdrop-filter:blur(18px);
+border:1px solid rgba(0,229,255,.12);border-radius:14px;
+}
+.kpi-mini{padding:10px 12px;background:rgba(255,255,255,.03);
+border-radius:10px;text-align:center}
+.kpi-mini .v{font:700 18px Rajdhani,sans-serif;color:#00E5FF}
+.kpi-mini .l{font:600 10px Rajdhani,sans-serif;letter-spacing:.12em;color:#7A8FA8}
+
+.crm-progress{height:8px;background:rgba(255,255,255,.06);border-radius:20px;overflow:hidden}
+.crm-progress>span{display:block;height:100%;
+background:linear-gradient(90deg,#00E5FF,#00FF88)}
+.pro-tier{
+display:inline-flex;align-items:center;gap:6px;
+padding:4px 10px;border-radius:20px;
+background:rgba(0,229,255,.08);font-size:11px;font-weight:700
+}
+.pro-tier::before{content:"◆"}
+.executive-panel{
+padding:16px;border-radius:14px;
+background:linear-gradient(135deg,rgba(0,229,255,.05),rgba(0,255,136,.03));
+border:1px solid rgba(0,229,255,.12);
+margin-bottom:14px;
+}
+.executive-title{font:700 22px Rajdhani,sans-serif;color:#00E5FF}
+.executive-sub{color:#7A8FA8;font-size:12px}
+@media(max-width:600px){
+.kpi-ribbon{grid-template-columns:repeat(2,1fr);top:52px}
+}
+</style>
+
+
+<style id="v4-upgrade">
+.agent-progress-card{
+background:rgba(255,255,255,.03);
+border:1px solid rgba(0,229,255,.08);
+border-radius:12px;
+padding:14px;
+margin-bottom:10px;
+}
+.agent-progress-bar{
+height:10px;border-radius:20px;
+background:rgba(255,255,255,.06);
+overflow:hidden;
+}
+.agent-progress-fill{
+height:100%;
+background:linear-gradient(90deg,#00E5FF,#00FF88);
+}
+.executive-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+margin-bottom:14px;
+}
+.exec-card{
+padding:14px;
+border-radius:12px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(0,229,255,.08);
+}
+.exec-title{font-size:10px;color:#7A8FA8;letter-spacing:.12em}
+.exec-value{font:700 24px Rajdhani,sans-serif;color:#00E5FF}
+@media(max-width:700px){
+.executive-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+
+
+<style id="v5-upgrade">
+.ai-insights-grid{
+display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px
+}
+.ai-card{
+padding:14px;border-radius:12px;
+background:linear-gradient(135deg,rgba(180,79,255,.08),rgba(0,229,255,.04));
+border:1px solid rgba(180,79,255,.15)
+}
+.ai-h{font:700 11px Rajdhani,sans-serif;letter-spacing:.12em;color:#B44FFF}
+.ai-v{font:700 24px Rajdhani,sans-serif;color:#fff;margin-top:6px}
+.ai-s{font-size:11px;color:#7A8FA8}
+.route-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.route-card{padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(0,229,255,.08)}
+.route-tap:active{background:rgba(0,229,255,.05)}
+.rt-due-block{margin-top:12px;padding-top:10px;border-top:1px solid var(--border2)}
+.rt-due-hd{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--red);margin-bottom:6px}
+.rt-due-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px}
+.rt-due-rank{width:16px;height:16px;border-radius:50%;background:rgba(255,45,120,.12);color:var(--red);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rt-due-name{flex:1;min-width:0;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-due-amt{color:var(--red);font-family:'Share Tech Mono',monospace;font-weight:600;flex-shrink:0}
+.rt-due-empty{color:var(--text3);font-size:11px;padding:4px 0}
+.rt-tap-hint{margin-top:10px;font-size:10px;letter-spacing:.08em;color:var(--cyan2);text-align:right;opacity:.7}
+.pl-item-due{border-left:2px solid var(--red)}
+@media(max-width:800px){
+.ai-insights-grid,.route-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+
+
+<style id="v6-upgrade">
+.v6-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.v6-card{padding:14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(0,229,255,.08)}
+.v6-title{font:700 10px Rajdhani,sans-serif;letter-spacing:.12em;color:#7A8FA8}
+.v6-value{font:700 22px Rajdhani,sans-serif;color:#00E5FF}
+.v6-recovery{margin-bottom:14px;padding:14px;border-radius:12px;background:rgba(255,45,120,.05);border:1px solid rgba(255,45,120,.15)}
+.v6-health{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.health-pill{padding:10px;border-radius:10px;text-align:center;background:rgba(255,255,255,.03)}
+@media(max-width:800px){.v6-grid,.v6-health{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+
+<style id="v7-upgrade">
+.v7-forecast,.v7-route-analytics{
+margin-bottom:14px;padding:14px;border-radius:12px;
+background:rgba(0,229,255,.04);
+border:1px solid rgba(0,229,255,.12);
+}
+.v7-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.v7-box{padding:12px;border-radius:10px;background:rgba(255,255,255,.03)}
+@media(max-width:800px){.v7-grid{grid-template-columns:1fr}}
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+</head>
+<body>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="login-scr" class="login-scr">
+  <div class="login-card">
+    <div class="logo-pill" style="margin:0 auto 18px">
+      <span>Rx</span>
+      <div class="logo-dot" style="top:4px;right:4px"></div>
+    </div>
+    <div class="login-title">AARADHYA RX COMMAND</div>
+    <div class="login-sub">PARTNER REWARDS ACCESS TERMINAL</div>
+
+    <form id="login-form" onsubmit="return handleLogin(event)">
+      <div class="login-field">
+        <label>LOGIN ID</label>
+        <input type="text" id="login-id" autocomplete="username" placeholder="admin or your Customer ID" required>
+      </div>
+      <div class="login-field">
+        <label>PASSWORD</label>
+        <input type="password" id="login-pw" autocomplete="current-password" placeholder="admin password or mobile number" required>
+      </div>
+      <div id="login-err" class="login-err" style="display:none"></div>
+      <button type="submit" class="login-btn">⟩ AUTHENTICATE</button>
+    </form>
+
+    <div class="login-hint">Agents: use your <strong>Customer ID</strong> as Login ID and your registered <strong>mobile number</strong> as password.</div>
+  </div>
+</div>
+
+<!-- ═══ APP SHELL (hidden until login) ═══ -->
+<div id="app-root" style="display:none">
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <div class="logo-wrap">
+    <div class="logo-pill">
+      <span>Rx</span>
+      <div class="logo-dot" style="top:4px;right:4px"></div>
+    </div>
+  </div>
+  <div class="bar-brand">
+    <div class="bar-title">AARADHYA RX COMMAND<span class="long"></span></div>
+    <div class="bar-sub"><span id="data-status">CONNECTING TO DATA FEED…</span></div>
+  </div>
+  <div class="bar-right">
+    <div id="nav-back" style="display:none"><button class="hbtn hbtn-ghost" onclick="goBack()">◄ BACK</button></div>
+    <div id="nav-home" style="display:none"><button class="hbtn hbtn-ghost" onclick="goHome()">⌂ BASE</button></div>
+    <div class="tab-rack" id="main-tabs">
+      <button class="tab-btn on" onclick="switchTab('dashboard',this)">COMMAND</button>
+      <button class="tab-btn" id="tab-agents-btn" onclick="switchTab('details',this)">AGENTS</button>
+      <button class="tab-btn"
+ onclick="switchTab('routes',this)">
+ ROUTES
+</button>
+      </div>
+    <button class="hbtn hbtn-cyan" onclick="loadData()">⟳ SYNC</button>
+    <button class="hbtn hbtn-ghost" onclick="handleLogout()" title="Log out">⏻</button>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<div class="shell">
+
+  <!-- loading -->
+  <div id="loading-scr" class="loading-scr">
+    <div class="hud-spinner"></div>
+    <div class="lt">INITIALISING DATA FEED</div>
+    <div class="ls">Connecting to Google Sheets HQ…</div>
+  </div>
+  <div id="err-bar" class="err-bar" style="display:none"></div>
+
+  <!-- ── DASHBOARD ── -->
+  <div id="page-dashboard" class="page">
+    <div class="period-bar">
+      <span class="period-lbl">◈ CYCLE</span>
+      <div id="period-pills" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+    <!-- ── ACTIVE OFFERS ── -->
+    <div id="offers-section" style="display:none;margin-bottom:14px">
+      <div class="panel-hd" style="padding:0 0 10px">
+        <div class="panel-title">🎁 ACTIVE OFFERS</div>
+        <div class="panel-tag" id="offers-count-tag">0</div>
+      </div>
+      <div class="offers-track" id="offers-track"></div>
+    </div>
+
+    <!-- primary KPI metrics (live computed data) -->
+    <div class="metrics-grid" id="metrics-area"></div>
+
+    <!-- tiers -->
+    <div class="panel" style="margin-bottom:12px">
+      <div class="panel-hd">
+        <div class="panel-title">◈ RANK DISTRIBUTION</div>
+        <div class="panel-tag" id="tier-cycle-lbl">LIVE</div>
+      </div>
+      <div class="tier-grid" id="tier-grid-area"></div>
+    </div>
+    <!-- top purchasers -->
+    <div class="panel" style="margin-bottom:12px">
+      <div class="panel-hd"><div class="panel-title">◈ TOP AGENTS</div></div>
+      <div id="top-list-area"></div>
+    </div>
+    <!-- analytics charts -->
+    <details class="fold" open>
+      <summary>📊 PURCHASE &amp; REVENUE CHARTS</summary>
+      <div id="chart-section"></div>
+    </details>
+    <!-- tier changes -->
+    <details class="fold">
+      <summary>🔄 RANK SHIFTS</summary>
+      <div id="tc-section"></div>
+    </details>
+    <!-- receipts summary -->
+    <details class="fold">
+      <summary>🧾 PAYMENT RECEIPTS</summary>
+      <div id="rcpt-section"></div>
+    </details>
+  </div>
+
+  <!-- ── ROUTES ── -->
+  <div id="page-routes" class="page">
+    <div class="panel">
+      <div class="panel-hd">
+        <div class="panel-title">ROUTE ANALYTICS</div>
+      </div>
+      <div id="routes-area"></div>
+    </div>
+  </div>
+
+  <!-- ── AGENTS LIST ── -->
+  <div id="page-details" class="page">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="search-inp"
+             id="search-inp"
+             type="text"
+             placeholder="Search agent name, city or district…"
+             oninput="filterBiz()">
+    </div>
+    <div class="plist" id="plist-area"></div>
+  </div>
+
+  <!-- ── ROUTE DETAIL ── -->
+  <div id="page-routeDetail" class="page">
+    <div class="panel">
+      <div class="panel-hd">
+        <div id="routeTitle" class="panel-title"></div>
+      </div>
+      <div id="routeDetailArea"></div>
+    </div>
+  </div>
+
+  <!-- ── AGENT DETAIL ── -->
+  <div id="page-detail" class="page">
+    <div class="panel">
+      <div class="panel-hd"><div class="panel-title">LOADING…</div></div>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<!-- ═══ MOBILE BOTTOM NAV ═══ -->
+<nav class="mob-nav" id="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-tab on" id="mob-tab-dashboard" onclick="switchTab('dashboard',this)">
+      <span class="mob-tab-icon">⌂</span>COMMAND
+    </button>
+    <button class="mob-tab" id="mob-tab-details" onclick="switchTab('details',this)">
+      <span class="mob-tab-icon">👤</span>AGENTS
+    </button>
+    <button class="mob-tab" id="mob-tab-routes" onclick="switchTab('routes',this)">
+      <span class="mob-tab-icon">🛣</span>ROUTES
+    </button>
+    <button class="mob-tab-sync" onclick="loadData()">
+      <span class="mob-tab-icon">⟳</span>SYNC
+    </button>
+    <button class="mob-tab-logout" onclick="handleLogout()">
+      <span class="mob-tab-icon">⏻</span>LOGOUT
+    </button>
+  </div>
+</nav>
+
+</div><!-- /app-root -->
+
+<script>
+/* ═══════ CONSTANTS ═══════ */
+const SID='1bjUIiD3xL8NWWzkZAatxvwp5n98yq7JVE5FODCbmvAs';
+const CSV='https://docs.google.com/spreadsheets/d/'+SID+'/gviz/tq?tqx=out:csv&sheet=';
+let customers=[],orders=[],receipts=[],offers=[],allMonths=[];
+let routeMaster=[];
+let selMonth='All',navStack=['dashboard'];
+/* AUTH — { role: 'admin'|'customer', custId: string|null }
+   role='admin' sees all data unrestricted, same as before.
+   role='customer' is scoped to a single custId everywhere: dashboard
+   metrics, agents list, and detail page all filter down to just them. */
+let AUTH=null;
+const ADMIN_ID='admin', ADMIN_PW='admin';
+const AUTH_STORAGE_KEY='aaradhya_rx_auth';
+const MMAP={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+
+/* ═══════ TIERS ═══════ */
+const TIERS=[
+  {name:'DIAMOND',full:'Diamond Partner',emoji:'💎',min:100000,color:'#38BDF8',glow:'rgba(56,189,248,.35)',bg:'rgba(56,189,248,.08)',border:'rgba(56,189,248,.3)',text:'#7DD3FC'},
+  {name:'PLATINUM',full:'Platinum Partner',emoji:'🌟',min:70000,color:'#C084FC',glow:'rgba(192,132,252,.3)',bg:'rgba(192,132,252,.08)',border:'rgba(192,132,252,.3)',text:'#D8B4FE'},
+  {name:'GOLD',full:'Gold Partner',emoji:'🥇',min:50000,color:'#FFB800',glow:'rgba(255,184,0,.35)',bg:'rgba(255,184,0,.08)',border:'rgba(255,184,0,.3)',text:'#FDE68A'},
+  {name:'SILVER',full:'Silver Partner',emoji:'🥈',min:20000,color:'#94A3B8',glow:'rgba(148,163,184,.2)',bg:'rgba(148,163,184,.08)',border:'rgba(148,163,184,.25)',text:'#CBD5E1'},
+  {name:'BRONZE',full:'Bronze Partner',emoji:'🥉',min:10000,color:'#FB923C',glow:'rgba(251,146,60,.3)',bg:'rgba(251,146,60,.08)',border:'rgba(251,146,60,.3)',text:'#FDBA74'},
+];
+const UNRANKED={name:'UNRANKED',full:'Unranked',emoji:'◦',min:0,color:'#3A5068',glow:'none',bg:'rgba(58,80,104,.08)',border:'rgba(58,80,104,.25)',text:'#64748B'};
+
+function getTier(a){for(const t of TIERS)if(a>=t.min)return t;return UNRANKED;}
+function tRank(t){const i=TIERS.findIndex(x=>x.name===t.name);return i===-1?-1:TIERS.length-1-i;}
+
+/* ═══════ LEAGUE STAY BADGES ═══════
+   A badge is awarded for every cycle (month) in which a customer
+   placed enough orders to qualify for a named tier (BRONZE or above).
+   Badge = tier trophy + short month label  e.g. 🥈 Apr
+   Returns array: [{tier, month, moShort}] sorted newest first.
+════════════════════════════════════════════════════════════════ */
+function getBadges(custId){
+  const badges=[];
+  allMonths.forEach(mo=>{
+    const amt=orders
+      .filter(o=>o.custId===custId&&o.month===mo)
+      .reduce((s,o)=>s+o.amount,0);
+    const t=getTier(amt);
+    if(t===UNRANKED)return;                     // no badge if unranked
+    const parts=mo.split('-');                  // ["Apr","2025"]
+    badges.push({tier:t,month:mo,moShort:parts[0]||mo});
+  });
+  return badges; // already newest-first because allMonths is sorted newest-first
+}
+
+/* Render a scrollable row of league-stay badge chips */
+function renderBadgeRow(custId,opts){
+  const badges=getBadges(custId);
+  if(!badges.length)return '';
+  const max=opts&&opts.max?opts.max:badges.length;
+  const chips=badges.slice(0,max).map(b=>`
+    <span class="league-badge" style="background:${b.tier.bg};border-color:${b.tier.border};color:${b.tier.color}" title="${b.tier.full} · ${b.month}">
+      ${b.tier.emoji}<span class="lb-mo">${b.moShort}</span>
+    </span>`).join('');
+  const overflow=badges.length>max?`<span class="lb-more">+${badges.length-max}</span>`:'';
+  return `<div class="badge-row">${chips}${overflow}</div>`;
+}
+
+/* ═══════ UTILS ═══════ */
+function fmtINR(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
+
+/* ═══════ OFFERS HELPERS ═══════ */
+function parseOfferDate(raw){
+  if(!raw)return null;
+  const s=String(raw).trim();
+  if(!s||s==='-'||s==='—')return null;
+
+  /* 1. gviz typed-Date cell: Date(yyyy,m,d)  — months are 0-based in gviz */
+  const gv=s.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)$/);
+  if(gv)return new Date(+gv[1],+gv[2],+gv[3]);
+
+  /* 2. ISO: yyyy-mm-dd */
+  const iso=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(iso)return new Date(+iso[1],+iso[2]-1,+iso[3]);
+
+  /* 3. Full slash-separated: dd/mm/yyyy or m/d/yyyy
+     If first number > 12 → must be day (dd/mm/yyyy)
+     If second number > 12 → must be day (mm/dd/yyyy US gviz)
+     Both ≤ 12 → assume dd/mm (Indian) */
+  const sl=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(sl){
+    const a=+sl[1],b=+sl[2],yr=+sl[3];
+    if(a>12)          return new Date(yr,b-1,a);
+    if(b>12)          return new Date(yr,a-1,b);
+    return new Date(yr,b-1,a);
+  }
+
+  /* 4. Dash: dd-mm-yyyy */
+  const dm=s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+  if(dm)return new Date(+dm[3],+dm[2]-1,+dm[1]);
+
+  /* 5. Year-less: dd/mm or d/m — assume current year */
+  const curYr=new Date().getFullYear();
+  const yl=s.match(/^(\d{1,2})\/(\d{1,2})$/);
+  if(yl){
+    const a=+yl[1],b=+yl[2];
+    if(a>12)return new Date(curYr,b-1,a);
+    if(b>12)return new Date(curYr,a-1,b);
+    return new Date(curYr,b-1,a);
+  }
+  const yld=s.match(/^(\d{1,2})-(\d{1,2})$/);
+  if(yld)return new Date(curYr,+yld[2]-1,+yld[1]);
+
+  console.warn('[Offers] unrecognised date format:',JSON.stringify(s));
+  return null;
+}
+
+function fmtOfferDate(d){
+  if(!d||isNaN(d))return '—';
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+function renderOffers(today){
+  const sec=document.getElementById('offers-section');
+  const track=document.getElementById('offers-track');
+  const tag=document.getElementById('offers-count-tag');
+  if(!sec||!track)return;
+
+  const now=today||new Date();
+  /* Current month label matches what's stored e.g. "Jun" or "Jun-2025" */
+  const curMonLabel=now.toLocaleDateString('en-IN',{month:'short'});   /* "Jun" */
+  const curMonFull =`${curMonLabel}-${now.getFullYear()}`;              /* "Jun-2025" */
+
+  /* Filter: Month = current month  AND  Status = active */
+  const eligible=offers.filter(o=>{
+    if(o.status!=='active')return false;
+    const mo=String(o.month||'').trim();
+    /* Accept "Jun", "Jun-2025", "June", "6", "06" all matching current month */
+    if(!mo)return false;
+    if(mo===curMonLabel||mo===curMonFull)return true;
+    /* numeric month e.g. "6" or "06" */
+    const num=parseInt(mo,10);
+    if(!isNaN(num)&&num===now.getMonth()+1)return true;
+    /* Long name e.g. "June" */
+    const longName=now.toLocaleDateString('en-IN',{month:'long'});
+    if(mo.toLowerCase()===longName.toLowerCase())return true;
+    return false;
+  });
+
+  if(!eligible.length){sec.style.display='none';return;}
+
+  /* Determine state for each offer */
+  const cards=eligible.map((o,i)=>{
+    const fromDt=o.from instanceof Date&&!isNaN(o.from)?o.from:null;
+    const toDt  =o.to   instanceof Date&&!isNaN(o.to)  ?o.to  :null;
+
+    /* End of the To-day at 23:59:59 */
+    let toEnd=null;
+    if(toDt){toEnd=new Date(toDt);toEnd.setHours(23,59,59,999);}
+
+    let state; // 'upcoming' | 'live' | 'expired'
+    if(fromDt&&fromDt>now){
+      state='upcoming'; // From is in the future
+    } else if(toEnd&&toEnd<now){
+      state='expired';  // To date already passed
+    } else {
+      state='live';     // From ≤ now ≤ To  (or no dates → treat as live)
+    }
+
+    /* Timestamp the tick should count down toward */
+    const cdTarget = state==='upcoming' ? fromDt.getTime()
+                   : state==='live'     ? (toEnd?toEnd.getTime():0)
+                   : 0;
+
+    const fromTxt=fromDt?fmtOfferDate(fromDt):'';
+    const toTxt  =toDt  ?fmtOfferDate(toDt)  :'';
+    const duration=fromTxt&&toTxt?`${fromTxt} – ${toTxt}`:fromTxt||toTxt||'';
+
+    const hasImg=o.imageUrl&&o.imageUrl.startsWith('http');
+    let imgSrc=o.imageUrl||'';
+    if(hasImg){
+      const dm=imgSrc.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if(dm)imgSrc=`https://drive.google.com/uc?export=view&id=${dm[1]}`;
+    }
+
+    return {o,state,cdTarget,fromTxt,toTxt,duration,hasImg,imgSrc,i};
+  });
+
+  const liveCount=cards.filter(c=>c.state==='live').length;
+  sec.style.display='block';
+  tag.textContent=liveCount+' LIVE';
+
+  track.innerHTML=cards.map(({o,state,cdTarget,duration,hasImg,imgSrc,i})=>{
+    const expired =state==='expired';
+    const upcoming=state==='upcoming';
+
+    /* Badge overlay on image */
+    let overlayHTML='';
+    if(expired){
+      overlayHTML=`<div class="offer-expired-badge"><span class="oeb-icon">✕</span>EXPIRED</div>`;
+    } else {
+      const label=upcoming?'STARTS IN':'ENDS IN';
+      const icon =upcoming?'🚀':'⏱';
+      overlayHTML=`<div class="offer-countdown-badge" data-target="${cdTarget}" data-label="${label}">
+        <span class="ocd-label">${icon} ${label}</span>
+        <span class="ocd-time">--:--:--</span>
+      </div>`;
+    }
+
+    return `<div class="offer-card${expired?' offer-expired':''}">
+      <div class="offer-img-wrap${expired?' offer-img-dim':''}">
+        ${hasImg
+          ?`<img class="offer-img" src="${imgSrc}" alt="${o.name}"
+                 onerror="this.parentElement.classList.add('offer-img-placeholder');this.remove()">`
+          :`<div style="font-size:28px;display:flex;align-items:center;justify-content:center;height:100%">🎁</div>`}
+        ${overlayHTML}
+      </div>
+      <div class="offer-body">
+        <div class="offer-name">${o.name}</div>
+        ${duration?`<div class="offer-duration">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          ${duration}
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  startOfferCountdown();
+}
+
+let _offerCdInterval=null;
+function startOfferCountdown(){
+  if(_offerCdInterval){clearInterval(_offerCdInterval);_offerCdInterval=null;}
+
+  function tick(){
+    const now=Date.now();
+    document.querySelectorAll('.offer-countdown-badge').forEach(badge=>{
+      const target=+badge.dataset.target||0;
+      const cdEl=badge.querySelector('.ocd-time');
+      if(!cdEl)return;
+
+      if(!target){cdEl.textContent='OPEN ENDED';return;}
+
+      const diff=target-now;
+
+      if(diff<=0){
+        /* Timer hit zero — flip to expired in-place */
+        const card=badge.closest('.offer-card');
+        const wrap=badge.closest('.offer-img-wrap');
+        if(card)card.classList.add('offer-expired');
+        if(wrap)wrap.classList.add('offer-img-dim');
+        badge.className='offer-expired-badge';
+        badge.innerHTML='<span class="oeb-icon">✕</span>EXPIRED';
+        return;
+      }
+
+      const days=Math.floor(diff/86400000);
+      const hrs =Math.floor((diff%86400000)/3600000);
+      const mins=Math.floor((diff%3600000)/60000);
+      const secs=Math.floor((diff%60000)/1000);
+
+      cdEl.textContent=days>0
+        ?`${days}d ${String(hrs).padStart(2,'0')}h ${String(mins).padStart(2,'0')}m`
+        :`${String(hrs).padStart(2,'0')}h ${String(mins).padStart(2,'0')}m ${String(secs).padStart(2,'0')}s`;
+
+      badge.classList.remove('ocd-urgent','ocd-warning');
+      if(diff<86400000)        badge.classList.add('ocd-urgent');
+      else if(diff<3*86400000) badge.classList.add('ocd-warning');
+    });
+  }
+
+  tick();
+  _offerCdInterval=setInterval(tick,1000);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHTWEIGHT SVG CHART ENGINE — no external libraries, themed
+   to match the sci-fi HUD aesthetic. Three chart types:
+     buildBarChart   — vertical bars (e.g. monthly revenue trend)
+     buildLineChart  — line + glow + dot markers (e.g. dual trend)
+     buildDonutChart — ring chart (e.g. tier distribution)
+   All return a ready-to-insert HTML string containing an <svg>.
+═══════════════════════════════════════════════════════════ */
+
+/* Vertical bar chart. data: [{label, value, color?}]. */
+function buildBarChart(data,opts={}){
+  const W=opts.width||320,H=opts.height||140,pad={t:18,r:10,b:26,l:10};
+  const innerW=W-pad.l-pad.r,innerH=H-pad.t-pad.b;
+  const maxV=Math.max(1,...data.map(d=>d.value));
+  const n=data.length||1;
+  const gap=8,barW=Math.max(8,(innerW-gap*(n-1))/n);
+  const defaultColor=opts.color||'var(--cyan)';
+  let bars='',labels='';
+  data.forEach((d,i)=>{
+    const h=Math.max(2,(d.value/maxV)*innerH);
+    const x=pad.l+i*(barW+gap);
+    const y=pad.t+innerH-h;
+    const color=d.color||defaultColor;
+    bars+=`<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="3" fill="${color}" opacity="0.85">
+      <title>${d.label}: ${opts.fmt?opts.fmt(d.value):d.value}</title>
+    </rect>`;
+    if(d.value>0){
+      bars+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" font-size="9" font-family="Share Tech Mono, monospace" fill="${color}">${opts.barLabelFmt?opts.barLabelFmt(d.value):''}</text>`;
+    }
+    labels+=`<text x="${x+barW/2}" y="${H-8}" text-anchor="middle" font-size="9" font-family="Rajdhani, sans-serif" font-weight="600" fill="var(--text3)" letter-spacing="0.3">${d.label}</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" preserveAspectRatio="xMidYMid meet">
+    <line x1="${pad.l}" y1="${pad.t+innerH}" x2="${W-pad.r}" y2="${pad.t+innerH}" stroke="var(--border2)" stroke-width="1"/>
+    ${bars}${labels}
+  </svg>`;
+}
+
+/* Line chart with optional second series, glow stroke, and dot markers.
+   series: [{label, points:[{x,y}], color}] where x/y are already 0..1 normalised
+   is NOT required — pass raw values; this function does the scaling.
+   data: [{label, value}] for single-series, OR pass `series` array directly
+   for multi-series: opts.series = [{name,color,values:[...]}], opts.labels=[...] */
+function buildLineChart(opts){
+  const W=opts.width||320,H=opts.height||150,pad={t:20,r:14,b:24,l:14};
+  const innerW=W-pad.l-pad.r,innerH=H-pad.t-pad.b;
+  const labels=opts.labels||[];
+  const series=opts.series||[];
+  const allVals=series.flatMap(s=>s.values);
+  const maxV=Math.max(1,...allVals);
+  const n=labels.length||1;
+  const stepX=n>1?innerW/(n-1):0;
+  const xAt=i=>pad.l+(n>1?i*stepX:innerW/2);
+  const yAt=v=>pad.t+innerH-(v/maxV)*innerH;
+
+  /* gridlines */
+  let grid='';
+  for(let g=0;g<=2;g++){
+    const gy=pad.t+innerH*(g/2);
+    grid+=`<line x1="${pad.l}" y1="${gy}" x2="${W-pad.r}" y2="${gy}" stroke="var(--border2)" stroke-width="1"/>`;
+  }
+
+  let paths='';
+  series.forEach((s,si)=>{
+    const pts=s.values.map((v,i)=>`${xAt(i)},${yAt(v)}`).join(' ');
+    const areaPath=`M${xAt(0)},${pad.t+innerH} L${pts.split(' ').join(' L')} L${xAt(n-1)},${pad.t+innerH} Z`;
+    paths+=`<path d="${areaPath}" fill="${s.color}" opacity="0.07"/>`;
+    paths+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" style="filter:drop-shadow(0 0 4px ${s.color}80)"/>`;
+    s.values.forEach((v,i)=>{
+      paths+=`<circle cx="${xAt(i)}" cy="${yAt(v)}" r="3.5" fill="${s.color}" stroke="var(--bg)" stroke-width="1.5">
+        <title>${s.name} — ${labels[i]}: ${opts.fmt?opts.fmt(v):v}</title>
+      </circle>`;
+    });
+  });
+
+  const labelEls=labels.map((l,i)=>`<text x="${xAt(i)}" y="${H-6}" text-anchor="middle" font-size="9" font-family="Rajdhani, sans-serif" font-weight="600" fill="var(--text3)" letter-spacing="0.3">${l}</text>`).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" preserveAspectRatio="xMidYMid meet">
+    ${grid}${paths}${labelEls}
+  </svg>`;
+}
+
+/* Donut/ring chart. data: [{label, value, color}]. Returns SVG + an inline legend. */
+function buildDonutChart(data,opts={}){
+  const size=opts.size||130,stroke=opts.stroke||16;
+  const r=(size-stroke)/2,cx=size/2,cy=size/2,circumference=2*Math.PI*r;
+  const total=data.reduce((s,d)=>s+d.value,0)||1;
+  let offset=0,arcs='';
+  data.forEach(d=>{
+    const frac=d.value/total;
+    const len=frac*circumference;
+    arcs+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.color}"
+      stroke-width="${stroke}" stroke-dasharray="${len} ${circumference-len}"
+      stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})" stroke-linecap="butt">
+      <title>${d.label}: ${d.value}</title>
+    </circle>`;
+    offset+=len;
+  });
+  const centerLbl=opts.centerLabel||'';
+  const centerVal=opts.centerValue||total;
+  const svg=`<svg viewBox="0 0 ${size} ${size}" style="width:${size}px;height:${size}px;flex-shrink:0">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border2)" stroke-width="${stroke}"/>
+    ${arcs}
+    <text x="${cx}" y="${cy-3}" text-anchor="middle" font-size="20" font-weight="700" font-family="Rajdhani, sans-serif" fill="var(--text)">${centerVal}</text>
+    <text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="8" font-family="Rajdhani, sans-serif" font-weight="600" fill="var(--text3)" letter-spacing="0.5">${centerLbl}</text>
+  </svg>`;
+  const legend=data.filter(d=>d.value>0).map(d=>`
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;padding:3px 0">
+      <span style="width:8px;height:8px;border-radius:2px;background:${d.color};flex-shrink:0;box-shadow:0 0 6px ${d.color}80"></span>
+      <span style="color:var(--text2)">${d.label}</span>
+      <span style="color:${d.color};font-weight:700;margin-left:auto;font-family:'Rajdhani',sans-serif">${d.value}</span>
+    </div>`).join('');
+  return {svg,legend};
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CANONICAL DATE ENGINE — single source of truth for all dates.
+   Every order/receipt row gets its date parsed ONCE at load time
+   into a real Date object (record._d). Every other date need in
+   the app (display, sorting, month derivation, predictions) reads
+   from that cached Date — nothing re-parses the raw string later.
+   This guarantees display, sort order, and month grouping can
+   never disagree with each other.
+═══════════════════════════════════════════════════════════ */
+const MON_NAMES=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MON_NAMES_LC=MON_NAMES.map(m=>m.toLowerCase());
+
+/* Parse a date string in one of these shapes:
+     dd-mm-yyyy, dd-mm-yy, dd-mon-yyyy, dd-mon-yy   (hyphen or dot separator,
+       day ALWAYS first — this is the format used when a sheet cell holds
+       literal text, exactly as specified)
+     m/d/yyyy                                        (slash separator — this
+       is what Google's gviz CSV export produces for a cell that is a TRUE
+       Date-typed cell rather than text, regardless of the sheet's display
+       format; gviz always serialises real dates as US month/day/year)
+   Returns a real Date object, or null if the string matches none of these
+   shapes. No fuzzy guessing — an unrecognised shape returns null so it can
+   be caught by the health-check warnings rather than silently misread. */
+function parseDateSmart(raw){
+  if(raw===null||raw===undefined)return null;
+  /* Strip: leading apostrophe (Sheets' "force text" marker), all whitespace
+     variants including non-breaking space (\u00A0), zero-width characters,
+     and BOM — any of which could make an otherwise-valid string silently
+     fail every regex below without looking visibly different. */
+  let d=String(raw)
+    .replace(/^[\uFEFF\u200B]+/,'')
+    .replace(/[\u00A0\s]+/g,' ')
+    .trim()
+    .replace(/^'/,'');
+  if(!d||d==='—'||d.toLowerCase()==='undefined'||d.toLowerCase()==='null')return null;
+
+  /* Google Sheets gviz CSV export occasionally serialises a Date-typed cell
+     as the literal text "Date(2026,3,13)" — year, 0-indexed month, day. */
+  const gviz=d.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)$/);
+  if(gviz)return new Date(parseInt(gviz[1]),parseInt(gviz[2]),parseInt(gviz[3]));
+
+  /* SLASH separator → gviz's export of a true Date-typed cell, always
+     m/d/yyyy (US order) regardless of the sheet's locale or display format. */
+  const slashMatch=d.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
+  if(slashMatch){
+    const mi=parseInt(slashMatch[1]),day=parseInt(slashMatch[2]);
+    const yrPart=slashMatch[3];
+    const year=yrPart.length===2?2000+parseInt(yrPart):parseInt(yrPart);
+    if(mi<1||mi>12||day<1||day>31)return null;
+    const result=new Date(year,mi-1,day);
+    if(result.getDate()!==day||result.getMonth()!==mi-1||result.getFullYear()!==year)return null;
+    return result;
+  }
+
+  /* HYPHEN or DOT separator → literal text in dd-mm-yyyy / dd-mm-yy /
+     dd-mon-yyyy / dd-mon-yy format, day always first, per spec. */
+  const norm=d.replace(/\./g,'-').trim();
+  const m=norm.match(/^(\d{1,2})-([A-Za-z]{3,}|\d{1,2})-(\d{2}|\d{4})$/);
+  if(!m)return null;
+
+  const day=parseInt(m[1]);
+  const yrPart=m[3];
+  const year=yrPart.length===2?2000+parseInt(yrPart):parseInt(yrPart);
+  if(isNaN(day)||day<1||day>31)return null;
+
+  let monthIdx; /* 0-indexed for Date() constructor */
+  if(/^\d+$/.test(m[2])){
+    /* dd-mm-yyyy / dd-mm-yy */
+    const mi=parseInt(m[2]);
+    if(mi<1||mi>12)return null;
+    monthIdx=mi-1;
+  }else{
+    /* dd-mon-yyyy / dd-mon-yy */
+    const idx=MON_NAMES_LC.indexOf(m[2].toLowerCase().slice(0,3));
+    if(idx<=0)return null; /* MON_NAMES_LC[0] is '' (unused), so <=0 means no match */
+    monthIdx=idx-1; /* MON_NAMES_LC is 1-indexed (index 0 is blank) */
+  }
+
+  const result=new Date(year,monthIdx,day);
+  /* Guard against JS Date's auto-rollover (e.g. day=31 in a 30-day month
+     silently becoming the 1st of next month) — treat that as invalid. */
+  if(result.getDate()!==day||result.getMonth()!==monthIdx||result.getFullYear()!==year)return null;
+  return result;
+}
+
+/* Display formatter — takes the CACHED Date object (never re-parses a string).
+   Returns "—" for missing/invalid dates, else "13-Apr-2026" (dd-mon-yyyy,
+   hyphen-separated, matching the format requested for display). */
+function fmtDateObj(dt){
+  if(!dt||isNaN(dt.getTime()))return '—';
+  return `${String(dt.getDate()).padStart(2,'0')}-${MON_NAMES[dt.getMonth()+1]}-${dt.getFullYear()}`;
+}
+
+/* Sort-key helper — takes the cached Date object, returns epoch ms (0 if null).
+   Used directly as a comparator value: array.sort((a,b)=>dateKey(b._d)-dateKey(a._d)) */
+function dateKey(dt){return dt&&!isNaN(dt.getTime())?dt.getTime():0;}
+
+/* Derive "Mon-YYYY" month bucket directly from a cached Date object —
+   guaranteed to match whatever date was actually parsed and displayed. */
+function monthFromDateObj(dt){
+  if(!dt||isNaN(dt.getTime()))return '';
+  return MON_NAMES[dt.getMonth()+1]+'-'+dt.getFullYear();
+}
+
+/* ═══════════ PREDICTION ENGINE ═══════════
+   Computes average gap between consecutive orders/receipts for a customer,
+   then projects the next likely order/payment date from the most recent one.
+   Operates entirely on cached Date objects — no re-parsing. */
+function computeCadence(dateObjList){
+  const valid=dateObjList.filter(d=>d&&!isNaN(d.getTime()));
+  if(valid.length<2) return {avgDays:null,lastDate:valid.length===1?valid[0]:null,nextDate:null,sampleSize:valid.length};
+  const sorted=valid.slice().sort((a,b)=>a-b); /* oldest → newest */
+  const gaps=[];
+  for(let i=1;i<sorted.length;i++){
+    const gapDays=Math.round((sorted[i]-sorted[i-1])/(1000*60*60*24));
+    if(gapDays>0) gaps.push(gapDays); /* ignore same-day duplicate entries */
+  }
+  if(!gaps.length) return {avgDays:null,lastDate:sorted[sorted.length-1],nextDate:null,sampleSize:valid.length};
+  const avgDays=Math.round(gaps.reduce((s,g)=>s+g,0)/gaps.length);
+  const lastDate=sorted[sorted.length-1];
+  const nextDate=new Date(lastDate.getTime()+avgDays*24*60*60*1000);
+  return {avgDays,lastDate,nextDate,sampleSize:valid.length};
+}
+
+/* Days from today until a predicted date — negative means overdue */
+function daysFromToday(d){
+  if(!d||isNaN(d.getTime()))return null;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const target=new Date(d); target.setHours(0,0,0,0);
+  return Math.round((target-today)/(1000*60*60*24));
+}
+
+/* Build the HUD prediction panel HTML for order + payment cadence */
+function buildPredictionHTML(orderCad,rcptCad){
+  const orderCell=buildPredictCell('📦','NEXT ORDER',orderCad,'#818CF8');
+  const rcptCell=buildPredictCell('💳','NEXT PAYMENT',rcptCad,'#00FF88');
+  return `<div class="predict-panel">
+    <div class="panel-hd">
+      <div class="panel-title">◈ ORDER &amp; PAYMENT FORECAST</div>
+      <div class="panel-tag">AI PREDICTED</div>
+    </div>
+    <div class="predict-grid">
+      ${orderCell}
+      ${rcptCell}
+    </div>
+  </div>`;
+}
+
+function buildPredictCell(icon,label,cad,color){
+  if(cad.sampleSize<2||!cad.nextDate){
+    const reason=cad.sampleSize===0?'NO HISTORY ON RECORD':cad.sampleSize===1?'NEED 2+ RECORDS TO PREDICT':'IRREGULAR PATTERN — CANNOT PREDICT';
+    return `<div class="predict-cell">
+      <div class="predict-cell-hd"><span class="predict-icon">${icon}</span><span class="predict-label">${label}</span></div>
+      <div style="color:var(--text3);font-size:13px;padding:8px 0">[ ${reason} ]</div>
+      ${cad.lastDate?`<div class="predict-sub">Last: ${fmtDateObj(cad.lastDate)}</div>`:''}
+    </div>`;
+  }
+  const daysOut=daysFromToday(cad.nextDate);
+  let cdClass='normal',cdText=`IN ${daysOut} DAYS`;
+  if(daysOut<0){cdClass='overdue';cdText=`${Math.abs(daysOut)} DAYS OVERDUE`;}
+  else if(daysOut<=2){cdClass='soon';cdText=daysOut===0?'DUE TODAY':`DUE IN ${daysOut} DAY${daysOut>1?'S':''}`;}
+  return `<div class="predict-cell">
+    <div class="predict-cell-hd"><span class="predict-icon">${icon}</span><span class="predict-label">${label}</span></div>
+    <div class="predict-date" style="color:${color};text-shadow:0 0 10px ${color}40">${fmtDateObj(cad.nextDate)}</div>
+    <div class="predict-sub">Based on ${cad.sampleSize} records · avg ${cad.avgDays}-day cycle</div>
+    <div class="predict-countdown ${cdClass}">${cdClass==='overdue'?'⚠':'⏱'} ${cdText}</div>
+    <div class="cadence-stat">LAST: ${fmtDateObj(cad.lastDate)}</div>
+  </div>`;
+}
+function moVal(m){
+  /* handles both "Apr-2026" and "Apr-26" */
+  const p=m.split('-');
+  const yr=parseInt(p[1]||0);
+  const fullYr=yr<100?2000+yr:yr;
+  return fullYr*12+(MMAP[p[0]]||0);
+}
+function ini(name){return (name||'').split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';}
+
+/* Normalise month strings to "Mon-YYYY" format (e.g. "Apr-2026", "Apr-26" → "Apr-2026").
+   Used only as a fallback when a sheet's pre-computed month column has a value
+   but a Date object isn't being used to derive the bucket. */
+function normMonth(s){
+  if(!s)return '';
+  s=s.trim();
+  if(/^[A-Za-z]{3}-\d{4}$/.test(s))return s;
+  const m=s.match(/^([A-Za-z]{3})-(\d{2})$/);
+  if(m)return m[1]+'-20'+m[2];
+  return s;
+}
+
+/* ── Receipt aggregation ── */
+function rcptTotalsFrom(rcpts){
+  const t={};
+  rcpts.forEach(r=>{
+    if(!r.custId||r.custId.toLowerCase()==='unknown')return;
+    t[r.custId]=(t[r.custId]||0)+r.amount;
+  });
+  return t;
+}
+function filtRcpt(){return selMonth==='All'?receipts:receipts.filter(r=>r.month===selMonth);}
+function outstandingFor(custId){
+  const cust=customers.find(c=>c.id===custId);
+  const initOut=(cust&&cust.initOutstanding)||0;
+  const totalOrders=orders.filter(o=>o.custId===custId).reduce((s,o)=>s+o.amount,0);
+  const totalCollected=receipts.filter(r=>r.custId===custId).reduce((s,r)=>s+r.amount,0);
+  return Math.max(0, initOut + totalOrders - totalCollected);
+}
+
+/* ═══════ CSV ═══════ */
+function parseCSV(txt){
+  const rows=[];let cur='',inQ=false,row=[];
+  for(let i=0;i<txt.length;i++){
+    const c=txt[i];
+    if(c==='"'){if(inQ&&txt[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){row.push(cur.trim());cur='';}
+    else if((c==='\n'||c==='\r')&&!inQ){
+      if(c==='\r'&&txt[i+1]==='\n')i++;
+      row.push(cur.trim());cur='';
+      if(row.some(x=>x!==''))rows.push(row);row=[];
+    }else cur+=c;
+  }
+  if(row.length){row.push(cur.trim());if(row.some(x=>x!==''))rows.push(row);}
+  return rows;
+}
+async function fetchSheet(name){
+  /* Cache-bust: Google's CSV export endpoint and some browsers can serve a
+     stale cached response, especially right after switching to a different
+     sheet ID. Appending a changing param forces a fresh fetch every load. */
+  const r=await fetch(CSV+encodeURIComponent(name)+'&_t='+Date.now(),{cache:'no-store'});
+  if(!r.ok)throw new Error('Cannot read "'+name+'"');
+  return parseCSV(await r.text());
+}
+
+/* Find a column index by matching header text against candidate keywords.
+   Immune to column reordering, header renames, or extra/missing columns.
+   Matches case/whitespace/punctuation-insensitively. Prefers an EXACT
+   normalised match first (avoids e.g. "OrderDate" wrongly matching a
+   "Date" candidate meant for a different column), then falls back to
+   substring containment. */
+function findCol(headerRow,...candidates){
+  const norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const normHeaders=headerRow.map(norm);
+  /* pass 1: exact match */
+  for(const cand of candidates){
+    const cN=norm(cand);
+    const idx=normHeaders.findIndex(h=>h===cN);
+    if(idx!==-1)return idx;
+  }
+  /* pass 2: substring containment (header contains candidate) */
+  for(const cand of candidates){
+    const cN=norm(cand);
+    const idx=normHeaders.findIndex(h=>h.includes(cN));
+    if(idx!==-1)return idx;
+  }
+  return -1;
+}
+
+/* ═══════ AUTH ═══════ */
+function normMobile(s){return (s||'').replace(/\D/g,'').slice(-10);} /* last 10 digits, strips +91/spaces/dashes */
+
+function handleLogin(ev){
+  ev.preventDefault();
+  const idRaw=document.getElementById('login-id').value.trim();
+  const pwRaw=document.getElementById('login-pw').value.trim();
+  const errEl=document.getElementById('login-err');
+  errEl.style.display='none';
+
+  /* Admin login: fixed credentials, sees everything */
+  if(idRaw.toLowerCase()===ADMIN_ID&&pwRaw===ADMIN_PW){
+    AUTH={role:'admin',custId:null};
+    sessionStorage.setItem(AUTH_STORAGE_KEY,JSON.stringify(AUTH));
+    enterApp();
+    return false;
+  }
+
+  /* Customer login: Login ID = Customer ID (case-insensitive exact match),
+     Password = registered mobile number (matched on last 10 digits, so
+     "+91 93375 53491", "9337553491", "93375-53491" all work the same). */
+  const cust=customers.find(c=>(c.id||'').toLowerCase()===idRaw.toLowerCase());
+  if(cust&&cust.mobile&&normMobile(cust.mobile)===normMobile(pwRaw)&&normMobile(pwRaw).length===10){
+    AUTH={role:'customer',custId:cust.id};
+    sessionStorage.setItem(AUTH_STORAGE_KEY,JSON.stringify(AUTH));
+    enterApp();
+    return false;
+  }
+
+  errEl.style.display='block';
+  errEl.textContent='Invalid Login ID or password. Customers: use your Customer ID and registered mobile number.';
+  return false;
+}
+
+function handleLogout(){
+  AUTH=null;
+  sessionStorage.removeItem(AUTH_STORAGE_KEY);
+  document.getElementById('app-root').style.display='none';
+  document.getElementById('login-scr').style.display='flex';
+  document.getElementById('login-form').reset();
+  document.getElementById('login-err').style.display='none';
+}
+
+function enterApp(){
+  document.getElementById('login-scr').style.display='none';
+  document.getElementById('app-root').style.display='block';
+
+  /* Customers don't get the Agents directory (it would just show themselves)
+     — they land straight on their own profile instead. */
+  document.getElementById('tab-agents-btn').style.display=AUTH.role==='customer'?'none':'inline-block';
+
+  if(AUTH.role==='customer'){
+    navStack=['detail'];
+    showDetailById(AUTH.custId);
+    document.getElementById('main-tabs').style.display='none';
+    document.getElementById('nav-home').style.display='none';
+    document.getElementById('nav-back').style.display='none';
+    const mn=document.getElementById('mob-nav'); if(mn) mn.style.display='none';
+    setTimeout(startFTUE,900); /* slight delay so profile renders first */
+  }else{
+    navStack=['dashboard'];
+    showPage('dashboard');
+  }
+}
+
+/* On a hard refresh, customers MUST log in again before any sheet data is
+   fetched — we can't validate a stored customer session without the
+   customer list loaded first. So: load data silently in the background,
+   then check the stored session against it, then either auto-enter or show
+   the login screen. Admin sessions don't need customer data to validate, so
+   they can enter immediately while data loads behind the scenes. */
+async function bootApp(){
+  const stored=sessionStorage.getItem(AUTH_STORAGE_KEY);
+  let pending=null;
+  if(stored){
+    try{pending=JSON.parse(stored);}catch(e){pending=null;}
+  }
+
+  if(pending&&pending.role==='admin'){
+    AUTH=pending;
+    enterApp();
+    await loadData();
+    return;
+  }
+
+  /* Either no stored session, or a customer session that needs the
+     customer list loaded first to verify the custId still exists.
+     AUTH is still null at this point, so loadData() itself won't render
+     anything — we decide what to show once data + session are both known. */
+  await loadData();
+
+  if(pending&&pending.role==='customer'&&customers.find(c=>c.id===pending.custId)){
+    AUTH=pending;
+    enterApp();
+  }
+  /* else: stay on the login screen (already visible by default) */
+}
+
+/* ═══════ LOAD ═══════ */
+async function loadData(){
+  document.getElementById('loading-scr').style.display='flex';
+  document.getElementById('err-bar').style.display='none';
+  ['dashboard','details','detail'].forEach(p=>document.getElementById('page-'+p).classList.remove('on'));
+  try{
+    const[cr,or,rr,ofr]=await Promise.all([fetchSheet('1_CUSTOMERS'),fetchSheet('2_ORDERS'),fetchSheet('12_RECEIPTS'),fetchSheet('13_OFFER').catch(()=>[])]);
+    const cm=await fetchSheet('COLUMN_MASTER');
+
+    /* ── 1_CUSTOMERS: resolve columns by header, fallback to known index ── */
+    const cH=cr[0]||[];
+    const cIdId=findCol(cH,'customerid','custid'); const cIdIdx=cIdId!==-1?cIdId:0;
+    const cIdName=findCol(cH,'businessname','partnername'); const cIdNameIdx=cIdName!==-1?cIdName:1;
+    const cIdOwner=findCol(cH,'ownername'); const cIdOwnerIdx=cIdOwner!==-1?cIdOwner:2;
+    const cIdMobile=findCol(cH,'mobile','whatsapp','phone'); const cIdMobileIdx=cIdMobile!==-1?cIdMobile:3;
+    const cIdOut=findCol(cH,'outstanding'); const cIdOutIdx=cIdOut!==-1?cIdOut:4;
+    const cIdAddr=findCol(cH,'address'); const cIdAddrIdx=cIdAddr!==-1?cIdAddr:5;
+    const cIdCity=findCol(cH,'city'); const cIdCityIdx=cIdCity!==-1?cIdCity:6;
+    const cIdDist=findCol(cH,'district'); const cIdDistIdx=cIdDist!==-1?cIdDist:7;
+    const cIdLic=findCol(cH,'druglicense','license','licence'); const cIdLicIdx=cIdLic!==-1?cIdLic:9;
+
+    customers=[];
+    for(let i=1;i<cr.length;i++){
+      const r=cr[i];if(!r[cIdIdx]||!r[cIdNameIdx])continue;
+      const initOut=parseFloat((r[cIdOutIdx]||'').replace(/[₹,\s]/g,''))||0;
+      customers.push({
+        id:r[cIdIdx],name:r[cIdNameIdx],owner:r[cIdOwnerIdx]||'',mobile:r[cIdMobileIdx]||'',
+        initOutstanding:initOut,address:r[cIdAddrIdx]||'',city:r[cIdCityIdx]||'',
+        district:r[cIdDistIdx]||'',license:r[cIdLicIdx]||''
+      });
+    }
+
+    /* ── 2_ORDERS: resolve columns by header, fallback to known index ── */
+    const oH=or[0]||[];
+    const oIdOrder=findCol(oH,'orderid'); const oIdOrderIdx=oIdOrder!==-1?oIdOrder:0;
+    const oIdCust=findCol(oH,'customerid','custid'); const oIdCustIdx=oIdCust!==-1?oIdCust:1;
+    const oIdBiz=findCol(oH,'businessname'); const oIdBizIdx=oIdBiz!==-1?oIdBiz:2;
+    const oIdDate=findCol(oH,'orderdate','date','transactiondate'); const oIdDateIdx=oIdDate!==-1?oIdDate:3;
+    const oIdMonth=findCol(oH,'ordermonth','month'); const oIdMonthIdx=oIdMonth!==-1?oIdMonth:4;
+    const oIdNet=findCol(oH,'netamount'); const oIdGross=findCol(oH,'grossamount');
+    const oIdAmtIdx=oIdNet!==-1?oIdNet:(oIdGross!==-1?oIdGross:8);
+
+    orders=[];
+    for(let i=1;i<or.length;i++){
+      const r=or[i];if(!r[oIdOrderIdx])continue;
+      const rawAmt=(r[oIdAmtIdx]||r[6]||'').replace(/[₹,\s]/g,'');
+      const amt=parseFloat(rawAmt)||0;
+      const dateVal=(r[oIdDateIdx]||'').trim();
+      const dObj=parseDateSmart(dateVal);
+      const sheetMonth=(r[oIdMonthIdx]||'').trim();
+      /* Prefer the sheet's own month column when present; else derive from the parsed date */
+      const month=normMonth(sheetMonth)||monthFromDateObj(dObj);
+      orders.push({id:r[oIdOrderIdx],custId:r[oIdCustIdx]||'',bizName:r[oIdBizIdx]||'',date:dateVal,_d:dObj,month,amount:amt});
+    }
+
+    /* ── 12_RECEIPTS: resolve columns by header, fallback to known index ── */
+    const rH=rr[0]||[];
+    const rIdCust=findCol(rH,'customerid','custid'); const rIdCustIdx=rIdCust!==-1?rIdCust:0;
+    const rIdBiz=findCol(rH,'businessname'); const rIdBizIdx=rIdBiz!==-1?rIdBiz:1;
+    const rIdDate=findCol(rH,'rcptdate','receiptdate','date'); const rIdDateIdx=rIdDate!==-1?rIdDate:2;
+    const rIdMonth=findCol(rH,'month'); const rIdMonthIdx=rIdMonth!==-1?rIdMonth:3;
+    const rIdAmt=findCol(rH,'amount'); const rIdAmtIdx=rIdAmt!==-1?rIdAmt:5;
+
+    receipts=[];
+    for(let i=1;i<rr.length;i++){
+      const r=rr[i];if(!r[rIdCustIdx]&&!r[rIdBizIdx])continue;
+      const amt=parseFloat((r[rIdAmtIdx]||'').replace(/[₹,\s]/g,''))||0;
+      if(amt===0)continue;
+      const rcptDate=(r[rIdDateIdx]||'').trim();
+      const dObj=parseDateSmart(rcptDate);
+      const sheetMonth=(r[rIdMonthIdx]||'').trim();
+      const month=normMonth(sheetMonth)||monthFromDateObj(dObj);
+      receipts.push({custId:r[rIdCustIdx]||'Unknown',bizName:r[rIdBizIdx]||'',date:rcptDate,_d:dObj,month,amount:amt});
+    }
+    routeMaster=[];
+
+for(let i=1;i<cm.length;i++){
+
+ const r=cm[i];
+
+ routeMaster.push({
+
+   customerId:r[0]||'',
+   businessName:r[1]||'',
+
+   area:r[2]||'',
+   route:r[3]||'',
+
+   mr:r[4]||'',
+
+   accountStatus:r[5]||'',
+
+   reactivatePayment:
+      parseFloat(String(r[6]||'0').replace(/[₹,\s]/g,''))||0,
+
+   fyBusiness:
+      parseFloat(String(r[7]||'0').replace(/[₹,\s]/g,''))||0,
+
+   fyCollection:
+      parseFloat(String(r[8]||'0').replace(/[₹,\s]/g,''))||0,
+
+   balance:
+      parseFloat(String(r[9]||'0').replace(/[₹,\s]/g,''))||0,
+
+   lat:
+      Number(r[10]||0),
+
+   lng:
+      Number(r[11]||0)
+
+ });
+
+}
+    allMonths=[...new Set([...orders.map(o=>o.month),...receipts.map(r=>r.month)].filter(Boolean))].sort((a,b)=>moVal(b)-moVal(a));
+
+    /* ── 13_OFFER: parse and render ── */
+    const offerRows=(ofr&&ofr.length>1?ofr.slice(1):[]);
+    console.log('[Offers] raw rows:',JSON.stringify(offerRows.slice(0,5)));
+    const today=new Date(); today.setHours(0,0,0,0);
+    offers=offerRows.map(r=>({
+      name:       (r[0]||'').trim(),
+      month:      (r[1]||'').trim(),
+      imageUrl:   (r[2]||'').trim(),
+      status:     (r[3]||'').trim().toLowerCase(),
+      from:       parseOfferDate(r[4]),
+      to:         parseOfferDate(r[5])
+    })).filter(o=>o.name&&o.status==='active');
+    renderOffers(today);
+
+    document.getElementById('loading-scr').style.display='none';
+    document.getElementById('data-status').textContent='FEED LIVE · '+customers.length+' AGENTS · '+orders.length+' ORDERS · '+receipts.length+' RECEIPTS';
+
+    /* Only build the admin-wide dashboard/agents views once an admin is
+       confirmed logged in. While AUTH is still null (login screen showing,
+       auth not yet resolved) or for a customer session, skip this — a
+       customer re-syncing should land back on their own profile, not get
+       bounced to the full dashboard, and there's no point rendering a
+       dashboard nobody can see yet during the initial boot check. */
+    if(AUTH&&AUTH.role==='admin'){
+buildPills();
+
+renderDash();
+
+buildBizList();
+
+renderRoutes();
+
+renderRouteSnapshot();
+
+showPage('dashboard');    }else if(AUTH&&AUTH.role==='customer'){
+      showDetailById(AUTH.custId);
+    }
+  }catch(e){
+    document.getElementById('loading-scr').style.display='none';
+    const el=document.getElementById('err-bar');
+    el.style.display='block';
+    el.innerHTML='<strong>[ERROR]</strong> '+e.message+' — Ensure sheet is public (Anyone with the link → Viewer).';
+  }
+}
+
+/* ═══════ PILLS ═══════ */
+function buildPills(){
+  const c=document.getElementById('period-pills');c.innerHTML='';
+  ['All',...allMonths].forEach(m=>{
+    const b=document.createElement('button');
+    b.className='pill'+(m===selMonth?' on':'');
+    b.textContent=m==='All'?'ALL TIME':m;
+    b.onclick=()=>{selMonth=m;buildPills();renderDash();};
+    c.appendChild(b);
+  });
+}
+function renderRouteSnapshot(){
+
+ const rt=
+   buildRouteAnalytics();
+
+ const el=
+   document.getElementById(
+    'routeSnapshot'
+   );
+
+ if(!el) return;
+
+ el.innerHTML=
+
+ Object.entries(rt)
+ .map(([name,r])=>`
+
+ <div class="v7-box"
+
+      onclick="openRouteTracker('${name}')"
+
+      style="cursor:pointer">
+
+   <b>${name}</b>
+
+   <br>
+
+   Performance Tracker
+
+   <br>
+
+   ${routeHealth(r)}
+
+ </div>
+
+ `).join('');
+}
+function openRouteTracker(route){
+
+ const rt =
+   buildRouteAnalytics();
+
+ const r =
+   rt[route];
+
+ if(!r){
+   alert('No data found');
+   return;
+ }
+const customersInRoute =
+ routeMaster.filter(x => {
+
+   const rr =
+    String(
+      x.route || x.area || ''
+    )
+    .trim()
+    .toUpperCase();
+
+   return rr ===
+     String(route)
+      .trim()
+      .toUpperCase();
+
+ }).sort((a,b)=>(b.balance||0)-(a.balance||0));
+
+ const efficiency =
+   r.revenue > 0
+    ? ((r.collection/r.revenue)*100)
+    : 0;
+
+ document.getElementById(
+   'routeTitle'
+ ).textContent =
+   route + ' PERFORMANCE TRACKER';
+
+ document.getElementById(
+   'routeDetailArea'
+ ).innerHTML = `
+
+ <div class="metrics-grid">
+
+   <div class="mc">
+      <div class="mc-lbl">
+        REVENUE
+      </div>
+
+      <div class="mc-val">
+        ${fmtINR(r.revenue)}
+      </div>
+   </div>
+
+   <div class="mc">
+      <div class="mc-lbl">
+        COLLECTION
+      </div>
+
+      <div class="mc-val">
+        ${fmtINR(r.collection)}
+      </div>
+   </div>
+
+   <div class="mc">
+      <div class="mc-lbl">
+        OUTSTANDING
+      </div>
+
+      <div class="mc-val">
+        ${fmtINR(r.outstanding)}
+      </div>
+   </div>
+
+   <div class="mc">
+      <div class="mc-lbl">
+        ACTIVE
+      </div>
+
+      <div class="mc-val">
+        ${r.active}
+      </div>
+   </div>
+
+   <div class="mc">
+      <div class="mc-lbl">
+        BLOCKED
+      </div>
+
+      <div class="mc-val">
+        ${r.blocked}
+      </div>
+   </div>
+
+   <div class="mc">
+      <div class="mc-lbl">
+        EFFICIENCY
+      </div>
+
+      <div class="mc-val">
+        ${efficiency.toFixed(1)}%
+      </div>
+   </div>
+
+ </div>
+
+ <div class="panel">
+
+   <div class="panel-hd">
+
+      <div class="panel-title">
+         CUSTOMERS IN ROUTE
+      </div>
+
+   </div>
+
+   ${customersInRoute.map((c,i)=>`
+
+      <div class="pl-item ${i<3 && c.balance>0 ? 'pl-item-due':''}"
+           onclick="showDetailById('${c.customerId}')">
+
+         <div class="pl-info">
+
+            <div class="pl-name">
+               ${i<3 && c.balance>0 ? '⚠ ' : ''}${c.businessName}
+            </div>
+
+            <div class="pl-loc">
+
+               ${c.accountStatus}
+
+               •
+
+               ${fmtINR(c.balance)}
+
+            </div>
+
+         </div>
+
+      </div>
+
+   `).join('')}
+
+ </div>
+
+ <div style="padding:12px">
+
+   <button
+      class="hbtn hbtn-cyan"
+      onclick="showPage('routes')">
+
+      ◄ BACK TO ROUTES
+
+   </button>
+
+ </div>
+
+ `;
+
+ showPage('routeDetail');
+
+}
+/* ═══════ AGGREGATION ═══════ */
+  function buildRouteAnalytics(){
+
+ const routes={};
+
+ routeMaster.forEach(r=>{
+
+   if(!routes[r.route]){
+
+      routes[r.route]={
+        revenue:0,
+        collection:0,
+        outstanding:0,
+        active:0,
+        blocked:0
+      };
+   }
+
+   routes[r.route].outstanding += (Number(r.balance)||0);
+
+   if(r.accountStatus==='ACTIVE')
+      routes[r.route].active++;
+
+   if(r.accountStatus==='BLOCKED')
+      routes[r.route].blocked++;
+
+ });
+
+ orders.forEach(o=>{
+
+   const rm=
+      routeMaster.find(
+       x=>x.customerId===o.custId
+      );
+
+   if(!rm)return;
+
+   routes[rm.route].revenue+=o.amount;
+
+ });
+
+ receipts.forEach(r=>{
+
+   const rm=
+      routeMaster.find(
+       x=>x.customerId===r.custId
+      );
+
+   if(!rm)return;
+
+   routes[rm.route].collection+=r.amount;
+
+ });
+
+ return routes;
+}
+
+function routeHealth(r){
+
+ const cp=
+   r.revenue>0
+    ? (r.collection/r.revenue)*100
+    : 0;
+
+ if(cp>=90)return '🟢';
+ if(cp>=75)return '🟡';
+
+ return '🔴';
+}
+function filtOrd(){return selMonth==='All'?orders:orders.filter(o=>o.month===selMonth);}
+function totalsFrom(ords){
+  const t={};
+  ords.forEach(o=>{if(!o.custId||o.custId.toLowerCase()==='unknown')return;t[o.custId]=(t[o.custId]||0)+o.amount;});
+  return t;
+}
+function nameMap(ords){const m={};ords.forEach(o=>{if(o.custId&&o.bizName)m[o.custId]=o.bizName;});return m;}
+function buildChgMap(curMo,prevMo){
+  const cm=curMo?totalsFrom(orders.filter(o=>o.month===curMo)):{};
+  const pm=prevMo?totalsFrom(orders.filter(o=>o.month===prevMo)):{};
+  const map={};
+  [...new Set([...Object.keys(cm),...Object.keys(pm)])].forEach(id=>{
+    const ca=cm[id]||0,pa=pm[id]||0,ct=getTier(ca),pt=getTier(pa);
+    if(tRank(ct)!==tRank(pt))map[id]={curAmt:ca,prevAmt:pa,curTier:ct,prevTier:pt,change:tRank(ct)>tRank(pt)?'up':'dn'};
+  });
+  return map;
+}
+
+/* ═══════ DASHBOARD ═══════ */
+function renderDash(){
+  const ords=filtOrd(),totals=totalsFrom(ords),ids=Object.keys(totals);
+  const rev=ords.reduce((s,o)=>s+o.amount,0);
+  const curMo=selMonth!=='All'?selMonth:(allMonths[0]||'');
+  const prevMo=selMonth!=='All'?allMonths[allMonths.indexOf(selMonth)+1]||'':(allMonths[1]||'');
+  const chgMap=buildChgMap(curMo,prevMo);
+
+  /* receipts for selected period */
+  const fRcpts=filtRcpt();
+  const rcptTotal=fRcpts.reduce((s,r)=>s+r.amount,0);
+  const rcptCount=fRcpts.length;
+  /* outstanding = sum of (initOutstanding + orders - receipts) per customer */
+  const allBilled=orders.reduce((s,o)=>s+o.amount,0);
+  const allInitOut=customers.reduce((s,c)=>s+(c.initOutstanding||0),0);
+  const allCollected=receipts.reduce((s,r)=>s+r.amount,0);
+  const totalOutstanding=Math.max(0,allInitOut+allBilled-allCollected);
+  const totalBase=allInitOut+allBilled;
+  const collectionPct=totalBase>0?Math.min(100,Math.round(allCollected/totalBase*100)):0;
+  /* ===== EXECUTIVE DASHBOARD LIVE DATA ===== */
+
+const diamondCount =
+  ids.filter(id => (totals[id] || 0) >= 100000).length;
+
+const __kpiRevenueEl=document.getElementById('kpiRevenue'); if(__kpiRevenueEl) __kpiRevenueEl.textContent=fmtINR(rev);
+
+const __kpiAgentsEl=document.getElementById('kpiAgents'); if(__kpiAgentsEl) __kpiAgentsEl.textContent=ids.length;
+
+const __kpiDiamondEl=document.getElementById('kpiDiamond'); if(__kpiDiamondEl) __kpiDiamondEl.textContent=diamondCount;
+
+const __kpiCollectionEl=document.getElementById('kpiCollection'); if(__kpiCollectionEl) __kpiCollectionEl.textContent=fmtINR(rcptTotal);
+
+const __v4AgentsEl=document.getElementById('v4Agents'); if(__v4AgentsEl) __v4AgentsEl.textContent=ids.length;
+
+/* Collection % */
+const execVals =
+ document.querySelectorAll('.exec-value');
+
+if(execVals[2])
+ execVals[2].textContent =
+   collectionPct + '%';
+
+/* Growth */
+const prevRevenue =
+ prevMo
+  ? orders
+      .filter(o=>o.month===prevMo)
+      .reduce((s,o)=>s+o.amount,0)
+  : 0;
+
+const growth =
+ prevRevenue > 0
+  ? ((rev-prevRevenue)/prevRevenue)*100
+  : 0;
+
+if(execVals[3])
+ execVals[3].textContent =
+   (growth>=0?'+':'') +
+   growth.toFixed(1)+'%';
+
+/* V6 Cards */
+
+const v6 =
+ document.querySelectorAll('.v6-value');
+
+if(v6[0])
+ v6[0].textContent =
+   Math.round((rev/800000)*100)+'%';
+
+if(v6[1])
+ v6[1].textContent =
+   fmtINR(totalOutstanding);
+
+if(v6[2])
+ v6[2].textContent =
+   fmtINR(Math.round(rev*1.15));
+
+if(v6[3])
+ v6[3].textContent =
+   rev>=800000 ? 'A+' :
+   rev>=600000 ? 'A' :
+   rev>=400000 ? 'B' :
+   rev>=200000 ? 'C' : 'D';
+
+/* Forecast Engine */
+
+const forecast =
+ Math.round(rev*1.15);
+
+const __v7ForecastEl=document.getElementById('v7Forecast');
+if(__v7ForecastEl) __v7ForecastEl.textContent=fmtINR(forecast);
+
+const __v7StatusEl=document.getElementById('v7Status');
+if(__v7StatusEl) __v7StatusEl.textContent=forecast>=800000?'TARGET LIKELY':'NEEDS PUSH';
+
+  /* metrics — 4 cards */
+  document.getElementById('metrics-area').className='metrics-grid metrics-grid-4';
+  document.getElementById('metrics-area').innerHTML=`
+    <div class="mc hero hud-box hud-box-b">
+      <div class="mc-ico">💊</div>
+      <div class="mc-lbl">MISSION REVENUE</div>
+      <div class="mc-val">${fmtINR(rev)}</div>
+      <div class="mc-sub">${selMonth==='All'?'ALL CYCLES':selMonth} · ${ords.length} ORDERS</div>
+    </div>
+    <div class="mc">
+      <div class="mc-ico">🎯</div>
+      <div class="mc-lbl">ACTIVE AGENTS</div>
+      <div class="mc-val" style="color:var(--cyan)">${ids.length}</div>
+      <div class="mc-sub">with orders placed</div>
+    </div>
+    <div class="mc">
+      <div class="mc-ico">💳</div>
+      <div class="mc-lbl">COLLECTED</div>
+      <div class="mc-val" style="color:var(--green)">${fmtINR(rcptTotal)}</div>
+      <div class="mc-sub">${rcptCount} RECEIPTS · ${selMonth==='All'?'ALL TIME':selMonth}</div>
+    </div>
+    <div class="mc">
+      <div class="mc-ico">⚠️</div>
+      <div class="mc-lbl">OUTSTANDING</div>
+      <div class="mc-val" style="color:${totalOutstanding>0?'var(--red)':'var(--green)'}">${fmtINR(totalOutstanding)}</div>
+      <div class="mc-sub" style="color:${collectionPct>=80?'var(--green)':collectionPct>=50?'var(--amber)':'var(--red)'}">${collectionPct}% COLLECTED OVERALL</div>
+    </div>`;
+
+  /* tier grid */
+  document.getElementById('tier-cycle-lbl').textContent=selMonth==='All'?'ALL TIME':selMonth;
+  document.getElementById('tier-grid-area').innerHTML=TIERS.map(t=>{
+    const nextMin=TIERS[TIERS.indexOf(t)-1]?.min||Infinity;
+    const cnt=ids.filter(id=>totals[id]>=t.min&&totals[id]<nextMin).length;
+    return `<div class="tc">
+      <div class="tc-glow" style="background:linear-gradient(90deg,transparent,${t.color},transparent);opacity:.4"></div>
+      <span class="tc-emoji">${t.emoji}</span>
+      <div class="tc-nm" style="color:${t.color}">${t.name}</div>
+      <div class="tc-ct" style="color:${t.text};text-shadow:0 0 12px ${t.color}40">${cnt}</div>
+      <div class="tc-mn">≥ ${fmtINR(t.min)}</div>
+    </div>`;
+  }).join('');
+
+  /* top 5 */
+  const nm=nameMap(ords);
+  const top5=ids.sort((a,b)=>totals[b]-totals[a]).slice(0,5);
+  const medals=[
+    {bg:'rgba(255,184,0,.15)',c:'#FFB800',border:'rgba(255,184,0,.4)',lbl:'01',glow:'0 0 8px rgba(255,184,0,.4)'},
+    {bg:'rgba(148,163,184,.12)',c:'#94A3B8',border:'rgba(148,163,184,.3)',lbl:'02',glow:'none'},
+    {bg:'rgba(251,146,60,.12)',c:'#FB923C',border:'rgba(251,146,60,.3)',lbl:'03',glow:'none'},
+    {bg:'rgba(58,80,104,.2)',c:'#3A5068',border:'rgba(58,80,104,.3)',lbl:'04',glow:'none'},
+    {bg:'rgba(58,80,104,.2)',c:'#3A5068',border:'rgba(58,80,104,.3)',lbl:'05',glow:'none'},
+  ];
+  document.getElementById('top-list-area').innerHTML=top5.length===0
+    ?'<div class="empty-note">[ NO DATA FOR THIS CYCLE ]</div>'
+    :top5.map((id,i)=>{
+      const m=medals[i],tier=getTier(totals[id]),chg=chgMap[id];
+      const badge=chg?`<span class="ibadge ${chg.change}">${chg.change==='up'?'▲':'▼'} ${chg.curTier.name}</span>`:'';
+      /* per-partner collection info */
+      const pBilled=orders.filter(o=>o.custId===id).reduce((s,o)=>s+o.amount,0);
+      const pCollected=receipts.filter(r=>r.custId===id).reduce((s,r)=>s+r.amount,0);
+      const pOut=Math.max(0,pBilled-pCollected);
+      const outTag=pOut>0?`<span style="font-size:10px;color:var(--red);margin-left:6px">⚠ ${fmtINR(pOut)} DUE</span>`:'<span style="font-size:10px;color:var(--green);margin-left:6px">✓ CLEAR</span>';
+      return `<div class="top-row" onclick="showDetailById('${id}')">
+        <div class="rank-orb" style="background:${m.bg};color:${m.c};border-color:${m.border};box-shadow:${m.glow}">${m.lbl}</div>
+        <div class="tr-info">
+          <div class="tr-name">${nm[id]||id}</div>
+          ${renderBadgeRow(id,{max:4})}
+          <div class="tr-meta">${tier.emoji} <span style="color:${tier.color}">${tier.full}</span>${outTag}</div>
+        </div>
+        <div class="tr-right">
+          <div class="tr-amt" style="color:${tier.color};text-shadow:0 0 10px ${tier.color}50">${fmtINR(totals[id])} ${badge}</div>
+          <div class="tr-badge" style="background:${tier.bg};color:${tier.color};border:1px solid ${tier.border}">${tier.full}</div>
+        </div>
+        <div class="tr-chev">›</div>
+      </div>`;
+    }).join('');
+
+  renderTierChanges(chgMap,curMo,prevMo,nm);
+  renderReceiptsDash(fRcpts,rcptTotal,rcptCount,curMo);
+  renderDashCharts(ids,totals);
+  renderRoutes();
+  renderRouteSnapshot();
+  startOfferCountdown(); /* keep countdown alive after every dashboard re-render */
+  showPage('dashboard');
+}
+
+/* ═══════ PROFILE-LEVEL ANALYTICS CHARTS ═══════ */
+function buildProfileChartsHTML(custId,cOrds,cRcpts,initOut,aAmt,aCollected,outstanding){
+  /* Per-month order vs receipt trend for this customer, last 6 known months */
+  const trendMonths=allMonths.slice(0,6).slice().reverse();
+  const ordByMonth=trendMonths.map(m=>cOrds.filter(o=>o.month===m).reduce((s,o)=>s+o.amount,0));
+  const rcptByMonth=trendMonths.map(m=>cRcpts.filter(r=>r.month===m).reduce((s,r)=>s+r.amount,0));
+  const trendLabels=trendMonths.map(m=>m.split('-')[0]);
+  const hasTrendData=ordByMonth.some(v=>v>0)||rcptByMonth.some(v=>v>0);
+
+  const trendChart=(trendMonths.length>=2&&hasTrendData)?buildLineChart({
+    width:300,height:150,labels:trendLabels,
+    series:[
+      {name:'Ordered',color:'#00E5FF',values:ordByMonth},
+      {name:'Collected',color:'#00FF88',values:rcptByMonth},
+    ],
+    fmt:fmtINR
+  }):'<div class="empty-note">[ NOT ENOUGH ORDER HISTORY YET ]</div>';
+
+  /* Payment status donut: Collected vs Outstanding share of total liability */
+  const totalLiability=initOut+aAmt;
+  const donutData=[
+    {label:'Collected',value:aCollected,color:'#00FF88'},
+    {label:'Outstanding',value:outstanding,color:'#FF2D78'},
+  ];
+  const collPctForDonut=totalLiability>0?Math.round(aCollected/totalLiability*100):0;
+  const donut=buildDonutChart(donutData,{centerLabel:'PAID',centerValue:collPctForDonut+'%'});
+
+  return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px" class="dash-chart-grid">
+    <div class="panel">
+      <div class="panel-hd">
+        <div class="panel-title">◈ PURCHASE TREND</div>
+        <div class="panel-tag">LAST ${trendMonths.length} CYCLES</div>
+      </div>
+      <div style="padding:14px 14px 6px">
+        ${trendChart}
+        ${(trendMonths.length>=2&&hasTrendData)?`
+        <div style="display:flex;gap:16px;justify-content:center;padding-top:8px;border-top:1px solid var(--border2);margin-top:4px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:2px;background:#00E5FF;display:inline-block;box-shadow:0 0 6px #00E5FF"></span>Ordered</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:2px;background:#00FF88;display:inline-block;box-shadow:0 0 6px #00FF88"></span>Collected</div>
+        </div>`:''}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-hd"><div class="panel-title">◈ PAYMENT STATUS</div></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;padding:18px 12px;flex-wrap:wrap">
+        ${donut.svg}
+        <div style="min-width:110px">${donut.legend}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════ DASHBOARD ANALYTICS CHARTS ═══════ */
+function renderDashCharts(ids,totals){
+  const sec=document.getElementById('chart-section');
+
+  /* Revenue + collections trend across the last 6 known months (oldest→newest) */
+  const trendMonths=allMonths.slice(0,6).slice().reverse();
+  const revByMonth=trendMonths.map(m=>orders.filter(o=>o.month===m).reduce((s,o)=>s+o.amount,0));
+  const collByMonth=trendMonths.map(m=>receipts.filter(r=>r.month===m).reduce((s,r)=>s+r.amount,0));
+  const trendLabels=trendMonths.map(m=>m.split('-')[0]);
+
+  const trendChart=trendMonths.length>=2?buildLineChart({
+    width:320,height:160,labels:trendLabels,
+    series:[
+      {name:'Revenue',color:'#00E5FF',values:revByMonth},
+      {name:'Collected',color:'#00FF88',values:collByMonth},
+    ],
+    fmt:fmtINR
+  }):'<div class="empty-note">[ NOT ENOUGH MONTHS OF DATA YET ]</div>';
+
+  /* Tier distribution donut, using already-computed totals for the selected period */
+  const donutData=TIERS.map(t=>{
+    const nextMin=TIERS[TIERS.indexOf(t)-1]?.min||Infinity;
+    const cnt=ids.filter(id=>totals[id]>=t.min&&totals[id]<nextMin).length;
+    return {label:t.name,value:cnt,color:t.color};
+  });
+  const unrankedCnt=ids.filter(id=>totals[id]<TIERS[TIERS.length-1].min).length;
+  if(unrankedCnt>0)donutData.push({label:'UNRANKED',value:unrankedCnt,color:UNRANKED.color});
+  const donut=buildDonutChart(donutData,{centerLabel:'AGENTS',centerValue:ids.length});
+
+  /* Top 6 agents bar chart for the selected period */
+  const top6=ids.slice().sort((a,b)=>totals[b]-totals[a]).slice(0,6);
+  const nm2=nameMap(orders);
+  const barData=top6.map(id=>{
+    const t=getTier(totals[id]);
+    return {label:(nm2[id]||id).split(' ')[0].slice(0,8),value:totals[id],color:t.color};
+  });
+  const barChart=barData.length>0?buildBarChart(barData,{width:320,height:150,fmt:fmtINR,barLabelFmt:v=>'₹'+(v>=1000?(v/1000).toFixed(1)+'k':v)}):'<div class="empty-note">[ NO DATA ]</div>';
+
+  sec.innerHTML=`
+  <div class="panel" style="margin-bottom:14px">
+    <div class="panel-hd">
+      <div class="panel-title">◈ REVENUE TREND</div>
+      <div class="panel-tag">LAST ${trendMonths.length} CYCLES</div>
+    </div>
+    <div style="padding:14px 16px 6px">
+      ${trendChart}
+      ${trendMonths.length>=2?`
+      <div style="display:flex;gap:16px;justify-content:center;padding-top:8px;border-top:1px solid var(--border2);margin-top:4px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:2px;background:#00E5FF;display:inline-block;box-shadow:0 0 6px #00E5FF"></span>Revenue</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:10px;height:2px;background:#00FF88;display:inline-block;box-shadow:0 0 6px #00FF88"></span>Collected</div>
+      </div>`:''}
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px" class="dash-chart-grid">
+    <div class="panel">
+      <div class="panel-hd"><div class="panel-title">◈ RANK SPLIT</div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:16px">
+        ${donut.svg}
+        <div style="flex:1;min-width:0">${donut.legend}</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-hd"><div class="panel-title">◈ TOP 6 AGENTS</div></div>
+      <div style="padding:14px 12px 6px">${barChart}</div>
+    </div>
+  </div>
+  `;
+}
+
+function renderTierChanges(chgMap,curMo,prevMo,nm){
+  const sec=document.getElementById('tc-section');
+  if(!curMo||!prevMo){sec.innerHTML='';return;}
+  const promoted=Object.entries(chgMap).filter(([,v])=>v.change==='up');
+  const demoted=Object.entries(chgMap).filter(([,v])=>v.change==='dn');
+  if(!promoted.length&&!demoted.length){
+    sec.innerHTML=`<div class="panel"><div class="panel-hd"><div class="panel-title">◈ RANK SHIFTS</div><div class="panel-tag">${prevMo} → ${curMo}</div></div><div class="no-chg">[ NO RANK CHANGES THIS CYCLE ]</div></div>`;return;
+  }
+  const mkRow=(list,type)=>list.sort((a,b)=>b[1].curAmt-a[1].curAmt).map(([id,v])=>{
+    const ac=type==='up'?'var(--green)':'var(--red)';
+    return `<div class="tch-row" onclick="showDetailById('${id}')">
+      <div class="tch-arr" style="color:${ac}">${type==='up'?'▲':'▼'}</div>
+      <div class="tch-info">
+        <div class="tch-name">${nm[id]||id}</div>
+        <div class="tch-tiers">${v.prevTier.emoji}<span style="color:${v.prevTier.color}">${v.prevTier.full}</span><span style="color:var(--text3)">→</span><span style="color:${v.curTier.color};font-weight:700">${v.curTier.emoji} ${v.curTier.full}</span></div>
+      </div>
+      <div class="tch-right">
+        <div class="tch-amt" style="color:${ac}">${fmtINR(v.curAmt)}</div>
+        <div class="tch-prev">prev ${fmtINR(v.prevAmt)}</div>
+      </div>
+      <div class="tr-chev">›</div>
+    </div>`;
+  }).join('');
+  const pc=promoted.length,dc=demoted.length;
+  sec.innerHTML=`<div class="panel">
+    <div class="panel-hd">
+      <div class="panel-title">◈ RANK SHIFTS</div>
+      <div style="display:flex;gap:7px">
+        ${pc?`<span class="ibadge up">▲ ${pc} PROMOTED</span>`:''}
+        ${dc?`<span class="ibadge dn">▼ ${dc} DEMOTED</span>`:''}
+      </div>
+    </div>
+    <div style="padding:7px 18px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--border2);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3)">
+      CYCLE COMPARISON: ${prevMo} ──── ${curMo}
+    </div>
+    ${pc?`<div class="tc-head-up">▲ RANK UP (${pc})</div>${mkRow(promoted,'up')}`:''}
+    ${dc?`<div class="tc-head-dn">▼ RANK DOWN (${dc})</div>${mkRow(demoted,'dn')}`:''}
+  </div>`;
+}
+
+/* ═══════ RECEIPTS DASHBOARD PANEL ═══════ */
+function renderReceiptsDash(fRcpts,rcptTotal,rcptCount,curMo){
+  const sec=document.getElementById('rcpt-section');
+  if(!fRcpts.length){
+    sec.innerHTML=`<div class="panel"><div class="panel-hd"><div class="panel-title">◈ PAYMENT RECEIPTS</div><div class="panel-tag">${selMonth==='All'?'ALL TIME':selMonth}</div></div><div class="no-chg">[ NO RECEIPTS IN THIS PERIOD ]</div></div>`;
+    return;
+  }
+  /* top collectors by receipt amount in period */
+  const byAgent={};
+  fRcpts.forEach(r=>{if(r.custId&&r.custId!=='Unknown')byAgent[r.custId]=(byAgent[r.custId]||0)+r.amount;});
+  const topAgents=Object.entries(byAgent).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  /* name map from receipts+orders */
+  const nm={};receipts.forEach(r=>{if(r.custId&&r.bizName)nm[r.custId]=r.bizName;});
+  orders.forEach(o=>{if(o.custId&&o.bizName)nm[o.custId]=o.bizName;});
+
+  /* recent 20 receipts sorted newest first, using cached parsed Date objects */
+  const sorted=[...fRcpts].sort((a,b)=>dateKey(b._d)-dateKey(a._d)).slice(0,20);
+
+  sec.innerHTML=`<div class="panel">
+    <div class="panel-hd">
+      <div class="panel-title">◈ PAYMENT RECEIPTS</div>
+      <div class="panel-tag">${selMonth==='All'?'ALL TIME':selMonth}</div>
+    </div>
+    <div class="rcpt-summary-grid">
+      <div class="rcpt-sum-cell">
+        <div class="rcpt-sum-lbl">TOTAL COLLECTED</div>
+        <div class="rcpt-sum-val" style="color:var(--green)">${fmtINR(rcptTotal)}</div>
+      </div>
+      <div class="rcpt-sum-cell">
+        <div class="rcpt-sum-lbl">RECEIPT COUNT</div>
+        <div class="rcpt-sum-val" style="color:var(--cyan)">${rcptCount}</div>
+      </div>
+      <div class="rcpt-sum-cell">
+        <div class="rcpt-sum-lbl">AVG PER RECEIPT</div>
+        <div class="rcpt-sum-val" style="color:var(--amber)">${rcptCount>0?fmtINR(rcptTotal/rcptCount):'—'}</div>
+      </div>
+    </div>
+    ${topAgents.length?`
+    <div style="padding:8px 16px 4px;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:rgba(0,0,0,.15);border-bottom:1px solid var(--border2)">
+      TOP PAYERS THIS PERIOD
+    </div>
+    ${topAgents.map(([id,amt],i)=>{
+      const cols=['#FFB800','#94A3B8','#FB923C','#3A5068','#3A5068'];
+      return `<div class="rcpt-row" style="cursor:pointer" onclick="showDetailById('${id}')">
+        <div class="rcpt-date" style="color:${cols[i]};min-width:24px;font-weight:700">#${i+1}</div>
+        <div class="rcpt-name">${nm[id]||id}</div>
+        <div class="rcpt-amt">${fmtINR(amt)}</div>
+        <div class="tr-chev">›</div>
+      </div>`;
+    }).join('')}`:''}
+    <div style="padding:8px 16px 4px;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:rgba(0,0,0,.15);border-bottom:1px solid var(--border2);border-top:1px solid var(--border2)">
+      RECENT RECEIPTS
+    </div>
+    ${sorted.map(r=>`<div class="rcpt-row">
+      <div class="rcpt-date">${fmtDateObj(r._d)}</div>
+      <div class="rcpt-name">${r.bizName||nm[r.custId]||r.custId}</div>
+      <div class="rcpt-mo">${r.month||'—'}</div>
+      <div class="rcpt-amt">${fmtINR(r.amount)}</div>
+    </div>`).join('')}
+    ${fRcpts.length>20?`<div class="tbl-more">[ SHOWING 20 OF ${fRcpts.length} RECEIPTS ]</div>`:''}
+  </div>`;
+}
+
+/* ═══════ BIZ LIST ═══════ */
+function top3OutstandingForRoute(routeName){
+  return routeMaster
+    .filter(x=>String(x.route||x.area||'').trim().toUpperCase()===String(routeName).trim().toUpperCase())
+    .filter(x=>(x.balance||0)>0)
+    .sort((a,b)=>(b.balance||0)-(a.balance||0))
+    .slice(0,3);
+}
+function renderRoutes(){
+
+ const rt=buildRouteAnalytics();
+
+ const el=document.getElementById('routes-area');
+
+ if(!el) return;
+
+ el.innerHTML=
+ Object.entries(rt)
+ .sort((a,b)=>b[1].revenue-a[1].revenue)
+ .map(([name,r])=>{
+
+   const efficiency=
+     r.revenue>0
+       ? ((r.collection/r.revenue)*100)
+       : 0;
+
+   const top3=top3OutstandingForRoute(name);
+   const top3Html=top3.length
+     ? top3.map((c,i)=>`<div class="rt-due-row">
+         <span class="rt-due-rank">${i+1}</span>
+         <span class="rt-due-name">${c.businessName||c.customerId}</span>
+         <span class="rt-due-amt">${fmtINR(c.balance)}</span>
+       </div>`).join('')
+     : '<div class="rt-due-row rt-due-empty">No outstanding dues</div>';
+
+   return `
+
+   <div class="mc route-tap" style="margin-bottom:12px;cursor:pointer" onclick="openRouteTracker('${name}')">
+
+     <div class="mc-lbl">${name}</div>
+
+     <div class="mc-val">
+       ${fmtINR(r.revenue)}
+     </div>
+
+     <div class="mc-sub">
+
+       Collection :
+       ${fmtINR(r.collection)}
+
+       <br>
+
+       Outstanding :
+       ${fmtINR(r.outstanding)}
+
+       <br>
+
+       Active :
+       ${r.active}
+
+       <br>
+
+       Blocked :
+       ${r.blocked}
+
+       <br>
+
+       Efficiency :
+       ${efficiency.toFixed(1)}%
+
+       <br>
+
+       Health :
+       ${routeHealth(r)}
+
+     </div>
+
+     <div class="rt-due-block">
+       <div class="rt-due-hd">⚠ TOP OUTSTANDING</div>
+       ${top3Html}
+     </div>
+
+     <div class="rt-tap-hint">TAP FOR PARTY LIST ▸</div>
+
+   </div>
+   `;
+ }).join('');
+}
+function buildBizList(){
+  const t=totalsFrom(orders);
+  window._AT=t;
+  window._BChg=buildChgMap(allMonths[0]||'',allMonths[1]||'');
+  const sorted=[...customers].sort((a,b)=>(t[b.id]||0)-(t[a.id]||0));
+  window._SC=sorted;renderPList(sorted);
+}
+function renderPList(list){
+  const t=window._AT||{},chg=window._BChg||{};
+  if(!list.length){document.getElementById('plist-area').innerHTML='<div class="empty-note">[ NO AGENTS FOUND ]</div>';return;}
+  document.getElementById('plist-area').innerHTML=list.slice(0,200).map(c=>{
+    const amt=t[c.id]||0,tier=getTier(amt),av=ini(c.name),ch=chg[c.id];
+    const badge=ch?`<span class="ibadge ${ch.change}" style="margin-left:4px">${ch.change==='up'?'▲':'▼'} ${ch.curTier.name}</span>`:'';
+    const out=outstandingFor(c.id);
+    const outTag=out>0?`<span style="font-size:10px;color:var(--red);margin-left:4px">⚠ ${fmtINR(out)}</span>`:amt>0?`<span style="font-size:10px;color:var(--green);margin-left:4px">✓</span>`:'';
+    return `<div class="pl-item" onclick="showDetailById('${c.id}')"
+      onmouseenter="this.style.borderLeftColor='${tier.color}';this.style.background='rgba(0,229,255,.02)'"
+      onmouseleave="this.style.borderLeftColor='transparent';this.style.background=''">
+      <div class="pl-av" style="background:${tier.bg};color:${tier.color};border-color:${tier.border}">${av}</div>
+      <div class="pl-info">
+        <div class="pl-name">${c.name}</div>
+        <div class="pl-loc">${[c.city,c.district].filter(Boolean).join(' · ')||'LOCATION UNKNOWN'}</div>
+      </div>
+      <div class="pl-right">
+        ${amt>0?`<div class="pl-amt" style="color:${tier.color}">${fmtINR(amt)}${badge}</div>`:'<div style="font-size:11px;color:var(--text3)">NO DATA</div>'}
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:3px">
+          <div class="pl-tier" style="background:${tier.bg};color:${tier.color};border:1px solid ${tier.border}">${tier.emoji} ${tier.name}</div>
+          ${outTag}
+        </div>
+      </div>
+      <div class="tr-chev">›</div>
+    </div>`;
+  }).join('');
+}
+function filterBiz(){
+  const q=document.getElementById('search-inp').value.toLowerCase();
+  renderPList((window._SC||[]).filter(c=>c.name.toLowerCase().includes(q)||c.city.toLowerCase().includes(q)||c.district.toLowerCase().includes(q)));
+}
+
+/* ═══════ QUESTS ═══════ */
+function computeQuests(custId,curMo,prevMo){
+  const cO=orders.filter(o=>o.custId===custId&&o.month===curMo);
+  const pO=orders.filter(o=>o.custId===custId&&o.month===prevMo);
+  const cnt=cO.length,tot=cO.reduce((s,o)=>s+o.amount,0);
+  const ptot=pO.reduce((s,o)=>s+o.amount,0);
+  const ct=getTier(tot),pt=getTier(ptot);
+  const q3d=curMo&&prevMo&&tRank(ct)===tRank(pt)&&tRank(ct)>tRank(UNRANKED);
+  const q1d=cnt>=2,q2d=tot>=20000;
+  return [
+    {icon:'📦',name:'FREQUENT BUYER',desc:'Place at least 2 orders this cycle',
+     pct:Math.min(100,Math.round(Math.min(cnt,2)/2*100)),done:q1d,color:'#818CF8',
+     progLbl:`${cnt} / 2 ORDERS`,tip:q1d?'MISSION COMPLETE ✓':`${2-cnt} ORDER${2-cnt>1?'S':''} REMAINING`},
+    {icon:'💊',name:'HIGH DOSAGE',desc:'Dispense ₹20,000 or more this cycle',
+     pct:Math.min(100,Math.round(Math.min(tot,20000)/20000*100)),done:q2d,color:'#FFB800',
+     progLbl:`${fmtINR(tot)} / ₹20,000`,tip:q2d?'MISSION COMPLETE ✓':`${fmtINR(20000-tot)} REMAINING`},
+    {icon:'🏰',name:'LEAGUE LOYALIST',desc:'Hold the same rank for two consecutive cycles',
+     pct:q3d?100:(prevMo&&ptot>0&&tot>0?50:(tot>0?25:0)),done:q3d,color:'#00E5FF',
+     progLbl:q3d?`${prevMo} + ${curMo} — ${ct.full}`:(prevMo&&ptot>0?`${pt.emoji}${pt.name} → ${ct.emoji}${ct.name}`:`ACTIVE IN ${curMo||'CURRENT'}`),
+     tip:q3d?'MISSION COMPLETE ✓':(prevMo&&ptot>0&&tot>0?`RANKS DIFFER — HOLD ${ct.name}`:'NEED DATA IN BOTH CYCLES')},
+  ];
+}
+
+function questHTML(quests,curMo){
+  const done=quests.filter(q=>q.done).length;
+  const avg=Math.round(quests.reduce((s,q)=>s+q.pct,0)/quests.length);
+  const R=22,C=2*Math.PI*R,fill=Math.round(avg/100*C);
+  const ringCol=avg===100?'#00FF88':'#FFB800';
+  const ring=`<div class="qring-wrap">
+    <svg width="54" height="54" viewBox="0 0 54 54">
+      <circle cx="27" cy="27" r="${R}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="5"/>
+      <circle cx="27" cy="27" r="${R}" fill="none" stroke="${ringCol}" stroke-width="5"
+        stroke-dasharray="${fill} ${C}" stroke-linecap="round"
+        style="filter:drop-shadow(0 0 4px ${ringCol})"/>
+    </svg>
+    <div class="qring-val">${avg}%</div>
+  </div>`;
+
+  const items=quests.map(q=>{
+    const rc=q.done?'done':q.pct>=50?'mid':'low';
+    const ic=q.done?'✓':q.pct>=50?'◑':'○';
+    const bc=q.done?'#00FF88':q.pct>=50?q.color:'rgba(255,255,255,.1)';
+    const pc=q.done?'var(--green)':q.pct>=50?q.color:'var(--text3)';
+    return `<div class="qi">
+      <div class="qi-pill" style="background:${q.color}12;border-color:${q.color}30">${q.icon}</div>
+      <div class="qi-body">
+        <div class="qi-name" style="color:${q.done?'var(--green)':q.color}">${q.name}</div>
+        <div class="qi-desc">${q.desc}</div>
+        <div class="xp-track">
+          <div class="xp-fill" style="width:${q.pct}%;background:linear-gradient(90deg,${bc}88,${bc})"></div>
+        </div>
+        <div class="xp-row">
+          <span class="xp-prog" style="color:${pc}">${q.progLbl}</span>
+          <span class="xp-tip">${q.tip}</span>
+        </div>
+      </div>
+      <div class="q-stat">
+        <div class="q-orb ${rc}">${ic}</div>
+        <div class="q-pct" style="color:${pc}">${q.pct}%</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="quest-panel" id="quest-section">
+    <div class="qhd">
+      <div class="qhd-left">
+        <div class="qhd-icon">⚔️</div>
+        <div><div class="qhd-ttl">ACTIVE MISSIONS</div><div class="qhd-sub">${curMo||'CURRENT CYCLE'} · ${done}/${quests.length} COMPLETE</div></div>
+      </div>
+      <div class="qhd-right">${ring}<div class="qscore"><div class="qscore-num">${done}/${quests.length}</div><div class="qscore-lbl">DONE</div></div></div>
+    </div>
+    <div>${items}</div>
+  </div>`;
+}
+
+/* ═══════ DETAIL ═══════ */
+function showDetailById(custId){
+  /* Hard security boundary: a customer session can only ever render its
+     own profile, no matter what custId gets passed in (defends against
+     any stray onclick handler or leftover dashboard link). */
+  if(AUTH&&AUTH.role==='customer'&&custId!==AUTH.custId)return;
+  const c=customers.find(x=>x.id===custId);if(!c)return;
+  const curMo=allMonths[0]||'',prevMo=allMonths[1]||'';
+  const cOrds=orders.filter(o=>o.custId===custId);
+  const mOrds=cOrds.filter(o=>o.month===curMo),pOrds=cOrds.filter(o=>o.month===prevMo);
+  const mAmt=mOrds.reduce((s,o)=>s+o.amount,0),pAmt=pOrds.reduce((s,o)=>s+o.amount,0);
+  const mCnt=mOrds.length,aAmt=cOrds.reduce((s,o)=>s+o.amount,0),aCnt=cOrds.length;
+  const tier=getTier(mAmt),av=ini(c.name);
+  const ct=getTier(mAmt),pt=getTier(pAmt);
+  const tierChg=tRank(ct)!==tRank(pt)?(tRank(ct)>tRank(pt)?'up':'dn'):null;
+  const chgBadge=tierChg?`<span class="chg-pill ${tierChg}">${tierChg==='up'?'▲ RANK UP':'▼ RANK DOWN'}</span>`:'';
+  const chgBanner=tierChg?`<div class="chg-banner ${tierChg}" style="margin:16px 20px 0">
+    <div class="chg-banner-icon">${tierChg==='up'?'🚀':'⚠️'}</div>
+    <div>
+      <div class="chg-banner-lbl ${tierChg}">${tierChg==='up'?'RANK PROMOTION!':'RANK DEMOTION'} — ${prevMo} → ${curMo}</div>
+      <div class="chg-banner-tiers">${pt.emoji}<strong style="color:${pt.color}">${pt.full}</strong><span style="color:var(--text3)">──►</span><strong style="color:${ct.color}">${ct.emoji} ${ct.full}</strong></div>
+    </div>
+  </div>`:'';
+  const diff=mAmt-pAmt,dS=diff>=0?'+':'',dC=diff>=0?'var(--green)':'var(--red)';
+  const quests=computeQuests(custId,curMo,prevMo);
+
+  /* ── Receipt data for this customer ── */
+  const cRcpts=receipts.filter(r=>r.custId===custId);
+
+  /* Sort receipts newest → oldest using cached parsed Date objects */
+  const sRcpts=cRcpts.slice().sort((a,b)=>dateKey(b._d)-dateKey(a._d));
+
+  /* Sort orders newest → oldest using cached parsed Date objects */
+  const sOrds=cOrds.slice().sort((a,b)=>dateKey(b._d)-dateKey(a._d));
+
+  /* ── Order & payment cadence + predictions (pass cached Date objects directly) ── */
+  const orderCadence=computeCadence(cOrds.map(o=>o._d));
+  const rcptCadence=computeCadence(cRcpts.map(r=>r._d));
+  const predictHTML=buildPredictionHTML(orderCadence,rcptCadence);
+
+  const mRcpts=cRcpts.filter(r=>r.month===curMo);
+  const mCollected=mRcpts.reduce((s,r)=>s+r.amount,0);
+  const aCollected=cRcpts.reduce((s,r)=>s+r.amount,0);
+  const outstanding=outstandingFor(custId);
+  const initOut=(customers.find(c=>c.id===custId)||{}).initOutstanding||0;
+  const totalBase=initOut+aAmt;
+  const collPct=totalBase>0?Math.min(100,Math.round(aCollected/totalBase*100)):0;
+  const outColor=outstanding>0?'var(--red)':'var(--green)';
+
+  const waNum=c.mobile.replace(/\D/g,'');
+  const mobileHtml=c.mobile?`
+    <div class="inf-val mono" style="margin-bottom:8px">${c.mobile}</div>
+    <div class="cbtns">
+      <a href="tel:${c.mobile}" class="cbtn cbtn-call" onclick="logCall('${custId}','${c.name||custId}','${c.mobile}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.29 6.29l.98-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        CALL
+      </a>
+      <a href="https://wa.me/91${waNum}" target="_blank" class="cbtn cbtn-wa">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        WHATSAPP
+      </a>
+    </div>`:'<div class="inf-val" style="color:var(--text3)">—</div>';
+
+  document.getElementById('page-detail').innerHTML=`
+    <div class="det-panel" id="det-snap-card" style="border-left-color:${tier.color}">
+      <div class="det-top-bar" id="customer-profile">
+        <div class="det-avatar" style="background:${tier.bg};color:${tier.color};border-color:${tier.border}">${av}<style>.det-avatar::after{border-color:${tier.color}}</style></div>
+        <div style="flex:1;min-width:0">
+          <div class="det-name" style="color:${tier.text};text-shadow:0 0 16px ${tier.color}40">${c.name}</div>
+          <div class="det-pills-row">
+            <span class="det-tier-pill" style="background:${tier.bg};color:${tier.color};border:1px solid ${tier.border}">${tier.emoji} ${tier.full}</span>
+            ${chgBadge}
+          </div>
+          ${renderBadgeRow(custId)}
+        </div>
+        ${AUTH&&AUTH.role!=='customer'?`
+        <div class="share-btns-row">
+          <button class="share-btn share-btn-profile" onclick="shareProfile('${custId}')" title="Share profile snapshot">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            PROFILE
+          </button>
+          <button class="share-btn share-btn-ledger" onclick="shareLedger('${custId}')" title="Share transaction ledger">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            LEDGER
+          </button>
+        </div>`:''}
+      </div>
+      ${chgBanner}
+      <div class="info-grid" style="margin-top:${tierChg?'16px':'0'}">
+        <div class="inf"><div class="inf-lbl">AGENT ID</div><div class="inf-val mono">${c.id}</div></div>
+        <div class="inf"><div class="inf-lbl">COMMANDER</div><div class="inf-val">${c.owner||'—'}</div></div>
+        <div class="inf s2">
+          <div class="inf-lbl">COMM CHANNEL</div>
+          ${mobileHtml}
+        </div>
+        <div class="inf"><div class="inf-lbl">SECTOR</div><div class="inf-val">${[c.city,c.district].filter(Boolean).join(' · ')||'—'}</div></div>
+        <div class="inf"><div class="inf-lbl">RX LICENCE</div><div class="inf-val mono">${c.license||'—'}</div></div>
+        <div class="inf s2"><div class="inf-lbl">COORDINATES</div><div class="inf-val">${c.address||'—'}</div></div>
+      </div>
+      <div class="stats-strip" id="business-summary" style="grid-template-columns:repeat(3,1fr)">
+        <div class="st">
+          <div class="st-bar" style="background:${tier.color};box-shadow:0 0 8px ${tier.color}"></div>
+          <div class="st-num" style="color:${tier.color};text-shadow:0 0 10px ${tier.color}60">${fmtINR(mAmt)}</div>
+          <div class="st-lbl">ORDERED · ${curMo||'THIS CYCLE'}</div>
+          ${pAmt>0?`<div class="st-diff" style="color:${dC}">${dS}${fmtINR(diff)}</div>`:''}
+        </div>
+        <div class="st">
+          <div class="st-bar" style="background:var(--green)"></div>
+          <div class="st-num" style="color:var(--green)">${fmtINR(mCollected)}</div>
+          <div class="st-lbl">COLLECTED · ${curMo||'THIS CYCLE'}</div>
+        </div>
+        <div class="st">
+          <div class="st-bar" style="background:${outColor}"></div>
+          <div class="st-num" style="color:${outColor}">${fmtINR(outstanding)}</div>
+          <div class="st-lbl">OUTSTANDING</div>
+          <div class="st-diff" style="color:${collPct>=80?'var(--green)':collPct>=50?'var(--amber)':'var(--red)'}">${collPct}% PAID</div>
+        </div>
+        <div class="st">
+          <div class="st-bar" style="background:${tier.color}"></div>
+          <div class="st-num" style="color:${tier.color}">${mCnt}</div>
+          <div class="st-lbl">ORDERS · ${curMo}</div>
+        </div>
+        <div class="st">
+          <div class="st-bar" style="background:var(--text3)"></div>
+          <div class="st-num" style="color:var(--text2)">${fmtINR(pAmt)}</div>
+          <div class="st-lbl">${prevMo||'PREV CYCLE'}</div>
+        </div>
+        <div class="st">
+          <div class="st-bar" style="background:var(--cyan)"></div>
+          <div class="st-num" style="color:var(--cyan)">${fmtINR(aAmt)}</div>
+          <div class="st-lbl">ALL-TIME BILLED</div>
+        </div>
+      </div>
+      <div class="snap-watermark">
+        <span>⚕ AARADHYA PHARMACEUTICALS</span>
+        <span>Generated ${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+      </div>
+    </div>
+
+    <!-- ═══ LEDGER SNAPSHOT CARD (hidden, used for shareLedger screenshot only) ═══ -->
+    <div id="det-ledger-card" class="ledger-snap-card" aria-hidden="true">
+      <!-- Ledger header -->
+      <div class="ledger-snap-hd">
+        <div class="ledger-snap-brand">⚕ AARADHYA PHARMACEUTICALS</div>
+        <div class="ledger-snap-title">ACCOUNT LEDGER</div>
+        <div class="ledger-snap-sub">${c.name} &nbsp;·&nbsp; ${c.id} &nbsp;·&nbsp; ${[c.city,c.district].filter(Boolean).join(', ')||'—'}</div>
+        ${renderBadgeRow(custId)}
+        <div class="ledger-snap-summary">
+          <div class="lsm-cell"><div class="lsm-lbl">OPENING BAL</div><div class="lsm-val" style="color:var(--amber)">${fmtINR(initOut)}</div></div>
+          <div class="lsm-cell"><div class="lsm-lbl">TOTAL BILLED</div><div class="lsm-val" style="color:var(--cyan)">${fmtINR(aAmt)}</div></div>
+          <div class="lsm-cell"><div class="lsm-lbl">TOTAL COLLECTED</div><div class="lsm-val" style="color:var(--green)">${fmtINR(aCollected)}</div></div>
+          <div class="lsm-cell"><div class="lsm-lbl">OUTSTANDING</div><div class="lsm-val" style="color:${outColor}">${fmtINR(outstanding)}</div></div>
+        </div>
+      </div>
+      <!-- Two-column body -->
+      <div class="ledger-snap-cols">
+        <!-- LEFT: Transaction Orders -->
+        <div class="ledger-col">
+          <div class="ledger-col-hd" style="color:var(--cyan)">
+            📋 TRANSACTION LOG
+            <span class="ledger-col-cnt">${aCnt} records · ${fmtINR(aAmt)}</span>
+          </div>
+          <table class="ledger-tbl">
+            <thead><tr><th>BILL NO.</th><th>DATE</th><th style="text-align:right">AMOUNT</th></tr></thead>
+            <tbody>
+              ${sOrds.length>0
+                ? sOrds.map(o=>`<tr>
+                    <td class="ledger-mono">${o.id}</td>
+                    <td class="ledger-mono">${fmtDateObj(o._d)}</td>
+                    <td class="ledger-amt" style="color:var(--cyan)">${fmtINR(o.amount)}</td>
+                  </tr>`).join('')
+                : '<tr><td colspan="3" class="ledger-empty">No transactions on record</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+        <!-- RIGHT: Payment Receipts -->
+        <div class="ledger-col">
+          <div class="ledger-col-hd" style="color:var(--green)">
+            🧾 PAYMENT RECEIPTS
+            <span class="ledger-col-cnt">${cRcpts.length} records · ${fmtINR(aCollected)}</span>
+          </div>
+          <table class="ledger-tbl">
+            <thead><tr><th>#</th><th>DATE</th><th style="text-align:right">RECEIVED</th></tr></thead>
+            <tbody>
+              ${sRcpts.length>0
+                ? sRcpts.map((r,i)=>`<tr>
+                    <td class="ledger-mono" style="color:var(--text3)">${String(sRcpts.length-i).padStart(2,'0')}</td>
+                    <td class="ledger-mono">${fmtDateObj(r._d)}</td>
+                    <td class="ledger-amt" style="color:var(--green)">${fmtINR(r.amount)}</td>
+                  </tr>`).join('')
+                : '<tr><td colspan="3" class="ledger-empty">No receipts on record</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Ledger footer -->
+      <div class="snap-watermark" style="margin-top:14px;padding-top:10px">
+        <span>⚕ AARADHYA PHARMACEUTICALS — CONFIDENTIAL</span>
+        <span>Generated ${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+      </div>
+    </div>
+
+    ${questHTML(quests,curMo)}
+
+    ${AUTH&&AUTH.role!=='customer'?`
+    <!-- ── CALL LOG ── -->
+    <div class="panel call-log-panel" id="call-log-panel-${custId}" style="margin-top:14px">
+      <div class="panel-hd" style="cursor:pointer" onclick="toggleCallLog('${custId}')">
+        <div class="panel-title">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.29 6.29l.98-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          CALL LOG
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="panel-tag" id="call-log-count-${custId}">0 calls</span>
+          <span style="color:var(--text3);font-size:14px" id="call-log-chev-${custId}">▾</span>
+        </div>
+      </div>
+      <div id="call-log-body-${custId}" style="display:none">
+        <div id="call-log-list-${custId}"></div>
+        <div class="call-log-add-row">
+          <button class="cl-add-btn" onclick="showAddCallNote('${custId}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            ADD NOTE / OUTCOME
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div class="cl-modal" id="cl-modal-${custId}" style="display:none">
+      <div class="cl-modal-box">
+        <div class="cl-modal-title">📞 Call Outcome — ${c.name}</div>
+        <div class="cl-modal-time" id="cl-modal-time-${custId}"></div>
+        <div class="cl-field-label">OUTCOME</div>
+        <div class="cl-outcome-row">
+          <button class="cl-outcome-btn on" data-v="Connected"    onclick="pickOutcome(this,'${custId}')">✅ Connected</button>
+          <button class="cl-outcome-btn"    data-v="No Answer"    onclick="pickOutcome(this,'${custId}')">📵 No Answer</button>
+          <button class="cl-outcome-btn"    data-v="Busy"         onclick="pickOutcome(this,'${custId}')">🔴 Busy</button>
+          <button class="cl-outcome-btn"    data-v="Switched Off" onclick="pickOutcome(this,'${custId}')">🔕 Switched Off</button>
+          <button class="cl-outcome-btn"    data-v="Called Back"  onclick="pickOutcome(this,'${custId}')">🔁 Called Back</button>
+        </div>
+        <div class="cl-field-label" style="margin-top:12px">NOTES <span style="font-weight:400;opacity:.6">(optional)</span></div>
+        <textarea class="cl-notes-inp" id="cl-notes-${custId}" placeholder="e.g. Will place order next week, follow up on Tuesday…" rows="3"></textarea>
+        <div class="cl-modal-actions">
+          <button class="cl-cancel-btn" onclick="closeCallModal('${custId}')">CANCEL</button>
+          <button class="cl-save-btn"   onclick="saveCallNote('${custId}','${c.name||custId}','${c.mobile||''}')">SAVE LOG</button>
+        </div>
+      </div>
+    </div>
+    `:''}
+
+
+    ${predictHTML}
+
+    <div class="ord-panel" id="receipts-section" style="margin-bottom:12px">
+      <div class="ord-hd">
+        <div class="ord-hd-title">◈ PAYMENT RECEIPTS</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          ${outstanding>0
+            ?`<span class="outstanding-pill">⚠ ${fmtINR(outstanding)} DUE</span>`
+            :`<span class="clear-pill">✓ ACCOUNT CLEAR</span>`}
+          <div class="ord-hd-cnt">${cRcpts.length} RECORDS</div>
+        </div>
+      </div>
+      <div class="rcpt-summary-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="rcpt-sum-cell">
+          <div class="rcpt-sum-lbl">OPENING BALANCE</div>
+          <div class="rcpt-sum-val" style="color:var(--amber)">${fmtINR(initOut)}</div>
+        </div>
+        <div class="rcpt-sum-cell">
+          <div class="rcpt-sum-lbl">TOTAL BILLED</div>
+          <div class="rcpt-sum-val" style="color:var(--cyan)">${fmtINR(aAmt)}</div>
+        </div>
+        <div class="rcpt-sum-cell">
+          <div class="rcpt-sum-lbl">TOTAL COLLECTED</div>
+          <div class="rcpt-sum-val" style="color:var(--green)">${fmtINR(aCollected)}</div>
+        </div>
+        <div class="rcpt-sum-cell">
+          <div class="rcpt-sum-lbl">OUTSTANDING</div>
+          <div class="rcpt-sum-val" style="color:${outColor}">${fmtINR(outstanding)}</div>
+        </div>
+      </div>
+      ${sRcpts.length>0?`
+      <table class="ord-tbl">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>RECEIPT DATE</th>
+            <th style="text-align:right">AMOUNT RECEIVED</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sRcpts.map((r,i)=>`<tr>
+            <td style="color:var(--text3);font-family:'Share Tech Mono',monospace;font-size:11px">${String(sRcpts.length-i).padStart(2,'0')}</td>
+            <td style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text)">${fmtDateObj(r._d)}</td>
+            <td class="ord-amt" style="color:var(--green);font-size:15px">${fmtINR(r.amount)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      ${cRcpts.length>sRcpts.length?`<div class="tbl-more">[ ${cRcpts.length} TOTAL RECEIPTS ]</div>`:''}`
+      :`<div class="no-chg">[ NO PAYMENT RECEIPTS ON RECORD ]</div>`}
+    </div>
+
+    ${sOrds.length>0?`
+    <div class="ord-panel" id="orders-section">
+      <div class="ord-hd">
+        <div class="ord-hd-title">◈ TRANSACTION LOG</div>
+        <div class="ord-hd-cnt">${aCnt} RECORDS · ${fmtINR(aAmt)} TOTAL</div>
+      </div>
+      <table class="ord-tbl">
+        <thead>
+          <tr>
+            <th>BILL NO.</th>
+            <th>DATE</th>
+            <th style="text-align:right">AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sOrds.map(o=>`<tr>
+            <td><span class="oid">${o.id}</span></td>
+            <td style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text)">${fmtDateObj(o._d)}</td>
+            <td class="ord-amt">${fmtINR(o.amount)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`
+    :`<div class="empty-note" style="background:var(--panel);border-radius:var(--r);border:1px solid var(--border)">[ NO TRANSACTION RECORDS ]</div>`}
+  `;
+  showPage('detail');
+}
+
+/* ═══════ NAVIGATION ═══════ */
+function showPage(page){
+
+ [
+  'dashboard',
+  'details',
+  'detail',
+  'routes',
+  'routeDetail'
+ ]
+ .forEach(p=>{
+
+   const el =
+     document.getElementById(
+       'page-'+p
+     );
+
+   if(el)
+     el.classList.remove('on');
+
+ });
+
+ const target =
+   document.getElementById(
+     'page-'+page
+   );
+
+ if(target)
+   target.classList.add('on');
+
+}
+function switchTab(page,el){
+  if(AUTH&&AUTH.role==='customer')return; /* customers stay on their own profile */
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('on'));
+  const deskBtn=document.querySelector(`.tab-btn[onclick*="switchTab('${page}'"]`);
+  if(deskBtn) deskBtn.classList.add('on');
+  const mobBtn=document.getElementById('mob-tab-'+page);
+  if(mobBtn) mobBtn.classList.add('on');
+  navStack=[page];showPage(page);
+}
+/* ═══════ SHARE HELPERS ═══════ */
+async function _captureAndShare(el, fname, title, text){
+  if(!el){alert('Could not find content to capture.');return;}
+  try{
+    const canvas=await html2canvas(el,{backgroundColor:'#0b1120',scale:2,useCORS:true,logging:false});
+    canvas.toBlob(async blob=>{
+      if(!blob)return;
+      if(navigator.canShare&&navigator.canShare({files:[new File([blob],fname,{type:'image/png'})]})){
+        await navigator.share({title,text,files:[new File([blob],fname,{type:'image/png'})]});
+      } else {
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;a.download=fname;a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),3000);
+      }
+    },'image/png');
+  } catch(err){
+    console.error('Capture error:',err);
+    alert('Could not capture. Please try again.');
+  }
+}
+
+async function shareProfile(custId){
+  const card=document.getElementById('det-snap-card');
+  if(!card)return;
+  const row=card.querySelector('.share-btns-row');
+  if(row)row.style.visibility='hidden';
+  const c=customers.find(x=>x.id===custId)||{};
+  const fname=`AaradhyaRx_${(c.name||custId).replace(/\s+/g,'_')}_Profile.png`;
+  await _captureAndShare(card,fname,
+    `${c.name||custId} — Aaradhya Rx Profile`,
+    `Your partner profile from Aaradhya Pharmaceuticals as on ${new Date().toLocaleDateString('en-IN')}.`
+  );
+  if(row)row.style.visibility='';
+}
+
+async function shareLedger(custId){
+  const card=document.getElementById('det-ledger-card');
+  if(!card)return;
+  /* Temporarily make the hidden ledger card visible for canvas capture */
+  card.style.position='fixed';
+  card.style.left='-9999px';
+  card.style.top='0';
+  card.style.display='block';
+  const c=customers.find(x=>x.id===custId)||{};
+  const fname=`AaradhyaRx_${(c.name||custId).replace(/\s+/g,'_')}_Ledger.png`;
+  await _captureAndShare(card,fname,
+    `${c.name||custId} — Aaradhya Account Ledger`,
+    `Account ledger from Aaradhya Pharmaceuticals as on ${new Date().toLocaleDateString('en-IN')}.`
+  );
+  card.style.display='none';
+  card.style.position='';
+  card.style.left='';
+  card.style.top='';
+}
+
+/* ═══════════════════════════════════════════════════════
+   CALL LOG  — Google Apps Script Web App backend
+   Sheet: 14_CALLLOG
+   Columns: ID | Timestamp | CustID | CustName | Mobile | Outcome | Notes | CalledBy
+   Set CALL_LOG_URL to your deployed Apps Script Web App URL
+═══════════════════════════════════════════════════════ */
+const CALL_LOG_URL = 'https://script.google.com/macros/s/AKfycbwLVjjjyR_jFi6UnhDdcoGYQQwmWemRBSreimz02NXVgC1nNZOVYnh_Cu3lg_DbMf0naA/exec';
+
+/* ── in-memory cache so we don't re-fetch on every render ── */
+const _clCache = {};   // { custId: { entries:[], ts:0 } }
+let   _clPending = {}; // custId → Promise  (dedup in-flight fetches)
+let   _clDialled = {}; // custId → { id, ts }  (pending "Dialled" entry waiting for outcome)
+
+/* ── helpers ── */
+function fmtCallTs(iso){
+  const d=new Date(iso);
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+
+    ' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+}
+function outcomeColor(o){
+  const map={'Connected':'var(--green)','Dialled':'var(--cyan)','No Answer':'var(--amber)',
+             'Busy':'var(--red)','Switched Off':'var(--text3)','Called Back':'#b57aff'};
+  return map[o]||'var(--text2)';
+}
+function clShowState(custId,html){
+  const el=document.getElementById('call-log-list-'+custId);
+  if(el)el.innerHTML=html;
+}
+function clUpdateCount(custId,n){
+  const el=document.getElementById('call-log-count-'+custId);
+  if(el)el.textContent=n+(n===1?' call':' calls');
+}
+
+/* ── fetch logs from sheet ── */
+async function clFetch(custId){
+  if(!CALL_LOG_URL){
+    clShowState(custId,'<div class="cl-empty cl-warn">⚙ Apps Script URL not configured. See setup instructions.</div>');
+    return [];
+  }
+  /* Return cached if < 30 s old */
+  if(_clCache[custId]&&Date.now()-_clCache[custId].ts<30000) return _clCache[custId].entries;
+  /* Dedup concurrent fetches */
+  if(_clPending[custId]) return _clPending[custId];
+  _clPending[custId]=(async()=>{
+    try{
+      const r=await fetch(`${CALL_LOG_URL}?action=get&custId=${encodeURIComponent(custId)}`,{redirect:'follow'});
+      const d=await r.json();
+      const entries=(d.entries||[]).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+      _clCache[custId]={entries,ts:Date.now()};
+      return entries;
+    }catch(e){
+      console.error('[CallLog] fetch error',e);
+      return _clCache[custId]?.entries||[];
+    }finally{delete _clPending[custId];}
+  })();
+  return _clPending[custId];
+}
+
+/* ── save / update / delete via GET (Apps Script POST triggers 302 redirect
+   which browsers silently convert to GET, bypassing doPost entirely.
+   Encoding payload as query params hits doGet reliably with no CORS issues.) ── */
+async function clPost(payload){
+  if(!CALL_LOG_URL) return false;
+  try{
+    /* Encode entire payload as a base64 query param to avoid URL-length limits
+       and special-character escaping issues in notes text */
+    const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    const url=`${CALL_LOG_URL}?p=${encodeURIComponent(encoded)}`;
+    const r=await fetch(url,{redirect:'follow'});
+    const d=await r.json();
+    return d.ok!==false;
+  }catch(e){
+    console.error('[CallLog] post error',e);
+    return false;
+  }
+}
+
+/* ── invalidate cache after write ── */
+function clInvalidate(custId){ delete _clCache[custId]; }
+
+/* ── render list ── */
+async function renderCallLog(custId){
+  const listEl=document.getElementById('call-log-list-'+custId);
+  if(!listEl)return;
+  if(!CALL_LOG_URL){
+    clShowState(custId,'<div class="cl-empty cl-warn">⚙ Configure CALL_LOG_URL to enable cloud logging.</div>');
+    return;
+  }
+  clShowState(custId,'<div class="cl-loading"><span class="cl-spin">◌</span> Loading…</div>');
+  const entries=await clFetch(custId);
+  clUpdateCount(custId,entries.length);
+  if(!entries.length){
+    clShowState(custId,'<div class="cl-empty">No calls logged yet. Tap CALL to start.</div>');
+    return;
+  }
+  clShowState(custId,entries.map(e=>`
+    <div class="cl-entry">
+      <div class="cl-entry-top">
+        <span class="cl-outcome" style="color:${outcomeColor(e.outcome)}">${e.outcome}</span>
+        <span class="cl-ts">${fmtCallTs(e.ts)}</span>
+        <button class="cl-del-btn" onclick="deleteCallEntry('${custId}','${e.id}')" title="Delete">✕</button>
+      </div>
+      ${e.notes?`<div class="cl-note">${e.notes}</div>`:''}
+      <div class="cl-by">📞 ${e.calledBy||'admin'}${e.mobile?' · '+e.mobile:''}</div>
+    </div>
+  `).join(''));
+}
+
+/* ── tap CALL button ── */
+function logCall(custId,name,mobile){
+  if(!AUTH||AUTH.role==='customer')return;
+  /* Store pending dialled info in memory (will be completed by saveCallNote) */
+  _clDialled[custId]={id:'cl_'+Date.now(),ts:new Date().toISOString()};
+  /* After 1.8 s show outcome modal */
+  setTimeout(()=>showAddCallNote(custId),1800);
+}
+
+/* ── toggle panel open/close ── */
+function toggleCallLog(custId){
+  const body=document.getElementById('call-log-body-'+custId);
+  const chev=document.getElementById('call-log-chev-'+custId);
+  if(!body)return;
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  if(chev)chev.textContent=open?'▴':'▾';
+  if(open)renderCallLog(custId);
+}
+
+/* ── outcome modal ── */
+let _clCurrentOutcome='Connected';
+function showAddCallNote(custId){
+  const modal=document.getElementById('cl-modal-'+custId);
+  const timeEl=document.getElementById('cl-modal-time-'+custId);
+  if(!modal)return;
+  _clCurrentOutcome='Connected';
+  modal.querySelectorAll('.cl-outcome-btn').forEach(b=>{
+    b.classList.toggle('on',b.dataset.v==='Connected');
+  });
+  const notes=document.getElementById('cl-notes-'+custId);
+  if(notes)notes.value='';
+  if(timeEl)timeEl.textContent=fmtCallTs(new Date().toISOString());
+  modal.style.display='flex';
+}
+
+function pickOutcome(btn,custId){
+  const modal=document.getElementById('cl-modal-'+custId);
+  if(modal)modal.querySelectorAll('.cl-outcome-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  _clCurrentOutcome=btn.dataset.v;
+}
+
+async function saveCallNote(custId,name,mobile){
+  const notesEl=document.getElementById('cl-notes-'+custId);
+  const notes=(notesEl?notesEl.value:'').trim();
+  const pending=_clDialled[custId];
+  const entry={
+    id:     pending?pending.id:'cl_'+Date.now(),
+    ts:     pending?pending.ts:new Date().toISOString(),
+    custId: custId,
+    custName:name,
+    mobile: mobile,
+    outcome:_clCurrentOutcome,
+    notes:  notes,
+    calledBy:AUTH?AUTH.id||'admin':'admin'
+  };
+  delete _clDialled[custId];
+  closeCallModal(custId);
+  /* Optimistic UI update */
+  clInvalidate(custId);
+  if(_clCache[custId]){
+    _clCache[custId].entries.unshift(entry);
+  } else {
+    _clCache[custId]={entries:[entry],ts:Date.now()};
+  }
+  /* Ensure panel is open */
+  const body=document.getElementById('call-log-body-'+custId);
+  if(body){body.style.display='block';const chev=document.getElementById('call-log-chev-'+custId);if(chev)chev.textContent='▴';}
+  renderCallLog(custId);
+  /* Persist to sheet */
+  const ok=await clPost({action:'save',entry});
+  if(!ok){
+    clShowState(custId,'<div class="cl-empty cl-warn">⚠ Saved locally but cloud sync failed. Check network.</div>');
+  } else {
+    clInvalidate(custId); /* force fresh fetch next time */
+  }
+}
+
+function closeCallModal(custId){
+  const modal=document.getElementById('cl-modal-'+custId);
+  if(modal)modal.style.display='none';
+}
+
+async function deleteCallEntry(custId,id){
+  clInvalidate(custId);
+  if(_clCache[custId]){
+    _clCache[custId].entries=_clCache[custId].entries.filter(e=>e.id!==id);
+    _clCache[custId].ts=Date.now();
+  }
+  renderCallLog(custId);
+  await clPost({action:'delete',custId,id});
+}
+
+/* ═══════════════════════════════════════════════
+   FTUE — First Time User Experience
+   Shows a guided tour to customers on first login.
+   Admin logins skip it entirely.
+   localStorage key: aaradhya_ftue_<custId>
+════════════════════════════════════════════════ */
+const dashboardTour=[
+  {
+    target:'#customer-profile',
+    icon:'👋',
+    title:'Welcome!',
+    body:'This is your personal Aaradhya Rx Command dashboard. Let us show you around.'
+  },
+  {
+    target:'#business-summary',
+    icon:'📊',
+    title:'Your Stats',
+    body:'Track your purchase history, collection status, and tier progress all in one place.'
+  },
+  {
+    target:'#quest-section',
+    icon:'🏆',
+    title:'Monthly Missions',
+    body:'Complete purchase targets each month to earn rewards and climb to higher tiers — Bronze, Silver, Gold, Diamond.'
+  },
+  {
+    target:'#receipts-section',
+    icon:'🧾',
+    title:'Payment Receipts',
+    body:'All your payments and receipts are recorded here. Monitor your outstanding balance at a glance.'
+  },
+  {
+    target:'#orders-section',
+    icon:'📋',
+    title:'Transaction Log',
+    body:'Every order you place is logged here with date and amount. Tap any row for full details.'
+  },
+  {
+    target:null,
+    icon:'🚀',
+    title:"You're all set!",
+    body:"That's everything. Your dashboard updates live whenever new data is synced. Happy selling!"
+  }
+];
+
+let _ftueStep=0;
+
+function _ftueKey(){return 'aaradhya_ftue_'+(AUTH?AUTH.custId||AUTH.id:'guest');}
+
+function startFTUE(){
+  if(!AUTH||AUTH.role!=='customer')return;
+  if(localStorage.getItem(_ftueKey()))return;
+  _ftueStep=0;
+  /* Build progress dots */
+  const prog=document.getElementById('ftue-progress');
+  if(prog) prog.innerHTML=dashboardTour.map((_,i)=>`<div class="ftue-dot${i===0?' on':''}"></div>`).join('');
+  document.getElementById('ftue-overlay').style.display='flex';
+  _renderFTUE();
+}
+
+function _renderFTUE(){
+  /* Remove previous highlight */
+  document.querySelectorAll('.tour-highlight').forEach(el=>el.classList.remove('tour-highlight'));
+  const p=dashboardTour[_ftueStep];
+  document.getElementById('ftue-icon').textContent=p.icon||'⭐';
+  document.getElementById('ftue-title').textContent=p.title;
+  document.getElementById('ftue-body').textContent=p.body;
+  /* Update progress dots */
+  document.querySelectorAll('.ftue-dot').forEach((d,i)=>d.classList.toggle('on',i===_ftueStep));
+  /* Update button label on last step */
+  const btn=document.querySelector('.ftue-btn');
+  if(btn) btn.textContent=_ftueStep===dashboardTour.length-1?'GET STARTED ✓':'CONTINUE →';
+  /* Highlight & scroll to target */
+  if(p.target){
+    const el=document.querySelector(p.target);
+    if(el){
+      el.classList.add('tour-highlight');
+      setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),300);
+    }
+  }
+}
+
+function nextFTUE(){
+  _ftueStep++;
+  if(_ftueStep>=dashboardTour.length){closeFTUE();return;}
+  _renderFTUE();
+}
+
+function closeFTUE(){
+  localStorage.setItem(_ftueKey(),'done');
+  document.getElementById('ftue-overlay').style.display='none';
+  document.querySelectorAll('.tour-highlight').forEach(el=>el.classList.remove('tour-highlight'));
+}
+
+function resetFTUE(){
+  /* Utility: call from console to retrigger tour */
+  localStorage.removeItem(_ftueKey());
+}
+
+function goHome(){
+  if(AUTH&&AUTH.role==='customer'){showDetailById(AUTH.custId);return;}
+  navStack=['dashboard'];showPage('dashboard');
+  document.querySelectorAll('.tab-btn,.mob-tab').forEach(b=>b.classList.remove('on'));
+  const deskBtn=document.querySelector(`.tab-btn[onclick*="switchTab('dashboard'"]`);
+  if(deskBtn) deskBtn.classList.add('on');
+  const mobBtn=document.getElementById('mob-tab-dashboard');
+  if(mobBtn) mobBtn.classList.add('on');
+}
+function goBack(){
+  if(AUTH&&AUTH.role==='customer')return; /* nothing to go back to */
+  navStack.pop();showPage(navStack[navStack.length-1]||'dashboard');
+}
+
+bootApp();
+</script>
+
+<script id="v7-dynamic-kpi">
+document.addEventListener('DOMContentLoaded',()=>{
+ try{
+   const agents=(window.customers||[]).length||0;
+   const rev=(window.customers||[]).reduce((a,c)=>a+(+c.amount||+c.business||0),0);
+   const el=document.getElementById('kpiAgents'); if(el) el.textContent=agents;
+   const er=document.getElementById('kpiRevenue'); if(er && rev) er.textContent='₹'+Math.round(rev).toLocaleString('en-IN');
+   const f=document.getElementById('v7Forecast'); if(f) f.textContent='Live Data Ready';
+   const s=document.getElementById('v7Status'); if(s) s.textContent='ON TRACK';
+ }catch(e){console.log(e);}
+});
+</script>
+
+
+<script id="v8-live-dashboard">
+function fmtINR_V8(v){
+ try{return '₹'+Number(v||0).toLocaleString('en-IN');}
+ catch(e){return '₹0';}
+}
+function getTierNameV8(b){
+ const n=Number(b||0);
+ if(n>=100000) return 'DIAMOND';
+ if(n>=70000) return 'PLATINUM';
+ if(n>=50000) return 'GOLD';
+ if(n>=20000) return 'SILVER';
+ if(n>=10000) return 'BRONZE';
+ return 'NEW';
+}
+function updateExecutiveDashboardV8(){
+ try{
+   const cust = window.customers || [];
+   const rcpt = window.receipts || [];
+
+   const totalRevenue = cust.reduce((s,c)=>s+(+c.business||+c.amount||0),0);
+   const totalCollections = rcpt.reduce((s,r)=>s+(+r.amount||0),0);
+   const diamondCount = cust.filter(c=>getTierNameV8(c.business)==='DIAMOND').length;
+
+   const rev=document.getElementById('kpiRevenue');
+   const ag=document.getElementById('kpiAgents');
+   const dia=document.getElementById('kpiDiamond');
+   const col=document.getElementById('kpiCollection');
+
+   if(rev) rev.textContent=fmtINR_V8(totalRevenue);
+   if(ag) ag.textContent=cust.length;
+   if(dia) dia.textContent=diamondCount;
+   if(col) col.textContent=fmtINR_V8(totalCollections);
+
+   const target=800000;
+   const ach=target?((totalRevenue/target)*100):0;
+
+   const v6=document.querySelectorAll('.v6-value');
+   if(v6.length>=4){
+      v6[0].textContent=ach.toFixed(1)+'%';
+      v6[1].textContent=fmtINR_V8(Math.max(0,totalRevenue-totalCollections));
+      v6[2].textContent=fmtINR_V8(totalRevenue*1.1);
+      v6[3].textContent=ach>=100?'A+':ach>=75?'A':ach>=50?'B':'C';
+   }
+
+   const f=document.getElementById('v7Forecast');
+   const s=document.getElementById('v7Status');
+   if(f) f.textContent=fmtINR_V8(totalRevenue*1.1);
+   if(s) s.textContent=ach>=100?'TARGET ACHIEVED':'ON TRACK';
+ }catch(err){console.log('V8 dashboard',err);}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+ setTimeout(updateExecutiveDashboardV8,1500);
+});
+
+const __oldLoadData = window.loadData;
+if(typeof __oldLoadData === 'function'){
+ window.loadData = async function(){
+   const r = await __oldLoadData.apply(this,arguments);
+   setTimeout(updateExecutiveDashboardV8,500);
+   return r;
+ }
+}
+</script>
+
+
+<script id="v9-route-analytics">
+function getAreaV9(c){
+ return c.area || c.Area || c.AREA || c.route || c.Route || 'Unknown';
+}
+function renderRouteAnalyticsV9(){
+ try{
+   const routes={};
+   (window.customers||[]).forEach(c=>{
+      const area=getAreaV9(c);
+      if(!routes[area]) routes[area]={sales:0,outstanding:0,count:0};
+      routes[area].sales += Number(c.business||c.amount||0);
+      routes[area].outstanding += Number(c.balance||0);
+      routes[area].count++;
+   });
+
+   const wrap=document.querySelector('.v7-route-analytics .v7-grid');
+   if(!wrap) return;
+
+   const rows=Object.entries(routes).sort((a,b)=>b[1].sales-a[1].sales);
+   if(!rows.length) return;
+
+   wrap.innerHTML='';
+   rows.slice(0,12).forEach(([name,r])=>{
+      const d=document.createElement('div');
+      d.className='v7-box';
+      d.innerHTML='<b>'+name+'</b><br>Sales: ₹'+Math.round(r.sales).toLocaleString('en-IN')+
+      '<br>Outstanding: ₹'+Math.round(r.outstanding).toLocaleString('en-IN')+
+      '<br>Customers: '+r.count;
+      wrap.appendChild(d);
+   });
+ }catch(e){console.log(e);}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+ setTimeout(renderRouteAnalyticsV9,2500);
+});
+
+if(window.loadData){
+ const oldLD=window.loadData;
+ window.loadData=async function(){
+   const r=await oldLD.apply(this,arguments);
+   setTimeout(()=>{
+      if(window.updateExecutiveDashboardV8) updateExecutiveDashboardV8();
+      renderRouteAnalyticsV9();
+   },800);
+   return r;
+ }
+}
+</script>
+
+
+<script id="dynamic-v10-patch">
+const MONTHLY_TARGET = 800000;
+
+function v10Fmt(v){return '₹'+Number(v||0).toLocaleString('en-IN');}
+
+function getFilteredOrders(){
+ if(window.selMonth && window.selMonth!=='All'){
+   return (window.orders||[]).filter(o=>String(o.orderMonth||o.month||'')===window.selMonth);
+ }
+ return window.orders||[];
+}
+
+function getFilteredReceipts(){
+ if(window.selMonth && window.selMonth!=='All'){
+   return (window.receipts||[]).filter(r=>String(r.orderMonth||r.month||'')===window.selMonth);
+ }
+ return window.receipts||[];
+}
+function updateV10Dashboard(){
+ try{
+   const ord=getFilteredOrders();
+   const rc=getFilteredReceipts();
+   const revenue=ord.reduce((s,o)=>s+Number(o.netAmount||o.amount||0),0);
+   const collection=rc.reduce((s,r)=>s+Number(r.amount||0),0);
+
+   const unique=new Set(ord.map(o=>o.customerId));
+   const agents=unique.size;
+
+   const salesByCust={};
+   ord.forEach(o=>{
+      salesByCust[o.customerId]=(salesByCust[o.customerId]||0)+Number(o.netAmount||0);
+   });
+   const diamond=Object.values(salesByCust).filter(v=>v>=100000).length;
+
+   const rev=document.getElementById('kpiRevenue');
+   const ag=document.getElementById('kpiAgents');
+   const di=document.getElementById('kpiDiamond');
+   const co=document.getElementById('kpiCollection');
+   if(rev) rev.textContent=v10Fmt(revenue);
+   if(ag) ag.textContent=agents;
+   if(di) di.textContent=diamond;
+   if(co) co.textContent=v10Fmt(collection);
+
+   const exec=document.querySelectorAll('.exec-value');
+   if(exec.length>=4){
+      exec[0].textContent='₹8L';
+      exec[1].textContent=agents;
+      exec[2].textContent=((collection/MONTHLY_TARGET)*100).toFixed(1)+'%';
+   }
+ }catch(e){console.log(e)}
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(updateV10Dashboard,2000));
+</script>
+<div id="routeModal"
+     class="modal"
+     style="display:none">
+
+  <div class="modal-content">
+
+     <div id="routeDetail"></div>
+
+     <button onclick="
+      document.getElementById('routeModal').style.display='none'
+     ">
+      CLOSE
+     </button>
+
+  </div>
+
+</div>
+<!-- ═══ FTUE OVERLAY ═══ -->
+<div id="ftue-overlay" class="ftue-overlay">
+  <div class="ftue-card">
+    <div id="ftue-icon" class="ftue-icon">👋</div>
+    <div class="ftue-progress" id="ftue-progress"></div>
+    <div id="ftue-title" class="ftue-title">Welcome</div>
+    <div id="ftue-body"  class="ftue-body">Welcome to Aaradhya Rx Command</div>
+    <button class="ftue-btn" onclick="nextFTUE()">CONTINUE →</button>
+    <div class="ftue-skip" onclick="closeFTUE()">Skip Tour</div>
+  </div>
+</div>
+
+</body>
+</html>
