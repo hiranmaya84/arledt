@@ -981,7 +981,74 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     .shell{padding-bottom:calc(94px + env(safe-area-inset-bottom))}
   }
 }
+.location-card{
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  overflow:hidden;
+}
 
+.location-map{
+  width:100%;
+  aspect-ratio:16/9;
+  display:block;
+  object-fit:cover;
+}
+
+.location-title{
+  padding:10px 14px;
+  font-family:'Rajdhani',sans-serif;
+  font-weight:700;
+  color:var(--cyan);
+  border-bottom:1px solid var(--border2);
+}
+
+.location-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:12px;
+}
+
+.loc-btn{
+  text-align:center;
+  padding:10px;
+  border-radius:6px;
+  font-family:'Rajdhani',sans-serif;
+  font-weight:700;
+}
+
+.loc-map{
+  background:rgba(0,229,255,.08);
+  border:1px solid rgba(0,229,255,.25);
+  color:var(--cyan);
+}
+
+.loc-dir{
+  background:rgba(0,255,136,.08);
+  border:1px solid rgba(0,255,136,.25);
+  color:var(--green);
+}
+
+.quick-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+
+.qa-btn{
+  padding:8px 14px;
+  border-radius:6px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:12px;
+  font-weight:700;
+}
+
+.qa-call{background:rgba(0,229,255,.08);color:var(--cyan);}
+.qa-wa{background:rgba(0,255,136,.08);color:var(--green);}
+.qa-nav{background:rgba(255,184,0,.08);color:var(--amber);}
+.qa-ledger{background:rgba(180,79,255,.08);color:var(--purple);}
 /* ═══════ FTUE TOUR ═══════ */
 .ftue-overlay{
   position:fixed;inset:0;z-index:20000;
@@ -3165,6 +3232,24 @@ function showDetailById(custId){
   </div>`:'';
   const diff=mAmt-pAmt,dS=diff>=0?'+':'',dC=diff>=0?'var(--green)':'var(--red)';
   const quests=computeQuests(custId,curMo,prevMo);
+  const routeInfo=routeMaster.find(r=>r.customerId===custId);
+
+const lat=routeInfo?.lat||0;
+const lng=routeInfo?.lng||0;
+
+const hasCoords=lat&&lng;
+
+const mapsUrl=hasCoords
+ ? `https://www.google.com/maps?q=${lat},${lng}`
+ : '';
+
+const dirUrl=hasCoords
+ ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+ : '';
+
+const mapImageUrl=hasCoords
+ ? `https://staticmap.openstreetmap.de/staticmap.php?center=${lat},${lng}&zoom=16&size=800x450&markers=${lat},${lng},red`
+ : '';
 
   /* ── Receipt data for this customer ── */
   const cRcpts=receipts.filter(r=>r.custId===custId);
@@ -3190,6 +3275,40 @@ function showDetailById(custId){
   const outColor=outstanding>0?'var(--red)':'var(--green)';
 
   const waNum=c.mobile.replace(/\D/g,'');
+  const locationHtml=hasCoords?`
+
+<div class="location-card">
+
+  <div class="location-title">
+    📍 LOCATION
+  </div>
+
+  <img
+    class="location-map"
+    src="${mapImageUrl}"
+    loading="lazy"
+    referrerpolicy="no-referrer"
+  >
+
+  <div class="location-actions">
+
+    <a href="${mapsUrl}"
+       target="_blank"
+       class="loc-btn loc-map">
+       VIEW MAP
+    </a>
+
+    <a href="${dirUrl}"
+       target="_blank"
+       class="loc-btn loc-dir">
+       DIRECTIONS
+    </a>
+
+  </div>
+
+</div>
+
+`:``;
   const mobileHtml=c.mobile?`
     <div class="inf-val mono" style="margin-bottom:8px">${c.mobile}</div>
     <div class="cbtns">
@@ -3213,6 +3332,34 @@ function showDetailById(custId){
             <span class="det-tier-pill" style="background:${tier.bg};color:${tier.color};border:1px solid ${tier.border}">${tier.emoji} ${tier.full}</span>
             ${chgBadge}
           </div>
+          <div class="quick-actions">
+
+  <a href="tel:${c.mobile}" class="qa-btn qa-call">
+    📞 CALL
+  </a>
+
+  <a href="https://wa.me/91${waNum}"
+     target="_blank"
+     class="qa-btn qa-wa">
+     💬 WHATSAPP
+  </a>
+
+  ${hasCoords?`
+  <a href="${dirUrl}"
+     target="_blank"
+     class="qa-btn qa-nav">
+     🧭 NAVIGATE
+  </a>
+  `:''}
+
+  <button
+    class="qa-btn qa-ledger"
+    onclick="shareLedger('${custId}')">
+
+    📋 LEDGER
+  </button>
+
+</div>
           ${renderBadgeRow(custId)}
         </div>
         ${AUTH&&AUTH.role!=='customer'?`
@@ -3236,8 +3383,10 @@ function showDetailById(custId){
           ${mobileHtml}
         </div>
         <div class="inf"><div class="inf-lbl">SECTOR</div><div class="inf-val">${[c.city,c.district].filter(Boolean).join(' · ')||'—'}</div></div>
+        ${locationHtml}
         <div class="inf"><div class="inf-lbl">RX LICENCE</div><div class="inf-val mono">${c.license||'—'}</div></div>
         <div class="inf s2"><div class="inf-lbl">COORDINATES</div><div class="inf-val">${c.address||'—'}</div></div>
+   
       </div>
       <div class="stats-strip" id="business-summary" style="grid-template-columns:repeat(3,1fr)">
         <div class="st">
