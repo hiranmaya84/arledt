@@ -3574,7 +3574,7 @@ async function shareLedger(custId){
    Columns: ID | Timestamp | CustID | CustName | Mobile | Outcome | Notes | CalledBy
    Set CALL_LOG_URL to your deployed Apps Script Web App URL
 ═══════════════════════════════════════════════════════ */
-const CALL_LOG_URL = ''; /* ← paste your Apps Script Web App URL here */
+const CALL_LOG_URL = 'https://script.google.com/macros/s/AKfycbwIUTvSlU0mFp4fnRii31EpEIoN36bKzZijGlrk0JyRcbKCJ_ey4sy4DkK4so97L_AtVw/exec'; /* ← paste your Apps Script Web App URL here */
 
 /* ── in-memory cache so we don't re-fetch on every render ── */
 const _clCache = {};   // { custId: { entries:[], ts:0 } }
