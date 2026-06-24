@@ -3277,34 +3277,36 @@ const mapImageUrl=hasCoords
   const waNum=c.mobile.replace(/\D/g,'');
   const locationHtml=hasCoords?`
 
+
 <div class="location-card">
 
-  <div class="location-title">
-    📍 LOCATION
-  </div>
+  <div class="location-title">
+    📍 LOCATION
+  </div>
 
-  <img
-    class="location-map"
-    src="${mapImageUrl}"
-    loading="lazy"
-    referrerpolicy="no-referrer"
-  >
+  <iframe
+    class="location-map-frame"
+    loading="lazy"
+    src="https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed">
+  </iframe>
 
-  <div class="location-actions">
+  <div class="location-actions">
 
-    <a href="${mapsUrl}"
-       target="_blank"
-       class="loc-btn loc-map">
-       VIEW MAP
-    </a>
+    <a href="${mapsUrl}"
+       target="_blank"
+       class="loc-btn loc-map">
+       VIEW MAP
+    </a>
 
-    <a href="${dirUrl}"
-       target="_blank"
-       class="loc-btn loc-dir">
-       DIRECTIONS
-    </a>
+    <a href="${dirUrl}"
+       target="_blank"
+       class="loc-btn loc-dir">
+       DIRECTIONS
+    </a>
 
-  </div>
+  </div>
+
+</div>
 
 </div>
 
