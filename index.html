@@ -138,7 +138,103 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* ═══════════ LOADING ═══════════ */
 .loading-scr{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;gap:16px}
+.league-progress{
 
+margin-top:12px;
+
+padding:12px;
+
+border-radius:12px;
+
+background:rgba(255,255,255,.03);
+
+}
+
+.lg-title{
+
+font-weight:700;
+
+margin-bottom:10px;
+
+}
+
+.lg-track{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-bottom:10px;
+
+}
+
+.lg-track div{
+
+width:36px;
+
+height:36px;
+
+border-radius:50%;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:#222;
+
+color:#777;
+
+border:2px solid #555;
+
+font-weight:700;
+
+}
+
+.lg-track .done{
+
+background:#1DB954;
+
+color:#fff;
+
+border-color:#1DB954;
+
+box-shadow:0 0 10px rgba(29,185,84,.4);
+
+}
+
+.lg-status{
+
+text-align:center;
+
+font-size:13px;
+
+font-weight:600;
+
+color:#bbb;
+
+}
+
+.claim-btn.ready{
+
+background:#FFD700;
+
+color:#111;
+
+animation:rewardPulse 1.4s infinite;
+
+}
+
+@keyframes rewardPulse{
+
+0%{transform:scale(1)}
+
+50%{transform:scale(1.05)}
+
+100%{transform:scale(1)}
+
+}
 /* ═══════════ LOGIN SCREEN ═══════════ */
 .login-scr{
   position:fixed;inset:0;z-index:1000;
@@ -1714,6 +1810,74 @@ const TIERS=[
 const UNRANKED={name:'UNRANKED',full:'Unranked',emoji:'◦',min:0,color:'#3A5068',glow:'none',bg:'rgba(58,80,104,.08)',border:'rgba(58,80,104,.25)',text:'#64748B'};
 
 function getTier(a){for(const t of TIERS)if(a>=t.min)return t;return UNRANKED;}
+  /* ==========================================================
+   LEAGUE MISSION ENGINE
+========================================================== */
+
+function getCustomerMonthlyLeague(custId){
+
+    const months=[...allMonths].sort((a,b)=>moVal(a)-moVal(b));
+
+    return months.map(month=>{
+
+        const amt=(Idx.custOrders.get(String(custId).toLowerCase())||[])
+            .filter(o=>o.month===month)
+            .reduce((s,o)=>s+o.amount,0);
+
+        return{
+            month,
+            amount:amt,
+            tier:getTier(amt)
+        };
+
+    });
+
+}
+
+function getLeagueStreak(custId){
+
+    const history=getCustomerMonthlyLeague(custId);
+
+    if(history.length===0){
+
+        return{
+            streak:0,
+            tier:null,
+            months:[]
+        };
+
+    }
+
+    const latest=history[history.length-1];
+
+    let streak=1;
+
+    const months=[latest.month];
+
+    for(let i=history.length-2;i>=0;i--){
+
+        if(history[i].tier.name===latest.tier.name){
+
+            streak++;
+            months.unshift(history[i].month);
+
+        }else{
+
+            break;
+
+        }
+
+    }
+
+    return{
+
+        streak,
+        tier:latest.tier,
+        months
+
+    };
+
+}
 function tRank(t){const i=TIERS.findIndex(x=>x.name===t.name);return i===-1?-1:TIERS.length-1-i;}
 
 /* ═══════ LEAGUE STAY BADGES ═══════
@@ -3499,6 +3663,7 @@ function computeQuests(custId,curMo,prevMo){
   const ct=getTier(tot),pt=getTier(ptot);
   const q3d=curMo&&prevMo&&tRank(ct)===tRank(pt)&&tRank(ct)>tRank(UNRANKED);
   const q1d=cnt>=2,q2d=tot>=20000;
+  const streak=getLeagueStreak(custId);
   return [
     {icon:'📦',name:'FREQUENT BUYER',desc:'Place at least 2 orders this cycle',
      pct:Math.min(100,Math.round(Math.min(cnt,2)/2*100)),done:q1d,color:'#818CF8',
@@ -3511,8 +3676,44 @@ function computeQuests(custId,curMo,prevMo){
      progLbl:q3d?`${prevMo} + ${curMo} — ${ct.full}`:(prevMo&&ptot>0?`${pt.emoji}${pt.name} → ${ct.emoji}${ct.name}`:`ACTIVE IN ${curMo||'CURRENT'}`),
      tip:q3d?'MISSION COMPLETE ✓':(prevMo&&ptot>0&&tot>0?`RANKS DIFFER — HOLD ${ct.name}`:'NEED DATA IN BOTH CYCLES')},
   ];
-}
+  return missions.filter(m=>{
 
+    if(m.id.startsWith("M"))
+        return true;
+
+    if(!m.id.startsWith("L"))
+        return true;
+
+    if(!streak.tier)
+        return false;
+
+    if(m.league &&
+       m.league.toUpperCase()!==streak.tier.name)
+        return false;
+
+    return streak.streak>=2;
+
+});
+}
+function leagueMissionProgress(custId,mission){
+
+    const streak=getLeagueStreak(custId);
+
+    return{
+
+        visible:streak.streak>=2,
+
+        completed:streak.streak>=3,
+
+        streak:streak.streak,
+
+        tier:streak.tier,
+
+        months:streak.months
+
+    };
+
+}
 function questHTML(quests,curMo){
   const done=quests.filter(q=>q.done).length;
   const avg=Math.round(quests.reduce((s,q)=>s+q.pct,0)/quests.length);
