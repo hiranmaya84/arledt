@@ -3652,6 +3652,88 @@ function _filterBizNow(){
   ));
 }
 
+  /* ==========================================================
+   GENERIC MISSION PROGRESS ENGINE
+========================================================== */
+
+function computeMissionProgress(custId, mission, curMo, prevMo){
+
+    const key=String(custId).toLowerCase();
+    const custOrders=Idx.custOrders.get(key)||[];
+
+    const current=custOrders.filter(o=>o.month===curMo);
+    const previous=custOrders.filter(o=>o.month===prevMo);
+
+    const total=current.reduce((s,o)=>s+o.amount,0);
+    const orders=current.length;
+
+    switch(mission.type){
+
+        case "ORDER_COUNT":
+
+            return{
+
+                current:orders,
+                target:mission.target,
+                completed:orders>=mission.target
+
+            };
+
+        case "ORDER_VALUE":
+
+            return{
+
+                current:total,
+                target:mission.target,
+                completed:total>=mission.target
+
+            };
+
+        case "LEAGUE_STREAK":
+
+            const streak=getLeagueStreak(custId);
+
+            return{
+
+                current:streak.streak,
+                target:mission.target,
+                completed:
+                    streak.streak>=mission.target &&
+                    (!mission.league ||
+                     streak.tier.name===mission.league)
+
+            };
+
+        case "GROWTH":
+
+            const prevTotal=previous.reduce((s,o)=>s+o.amount,0);
+
+            const growth=
+                prevTotal===0
+                ?100
+                :((total-prevTotal)/prevTotal)*100;
+
+            return{
+
+                current:growth,
+                target:mission.target,
+                completed:growth>=mission.target
+
+            };
+
+        default:
+
+            return{
+
+                current:0,
+                target:0,
+                completed:false
+
+            };
+
+    }
+
+}
 /* ═══════ QUESTS ═══════ */
 function computeQuests(custId,curMo,prevMo){
   const k=String(custId).toLowerCase();
@@ -3664,7 +3746,7 @@ function computeQuests(custId,curMo,prevMo){
   const q3d=curMo&&prevMo&&tRank(ct)===tRank(pt)&&tRank(ct)>tRank(UNRANKED);
   const q1d=cnt>=2,q2d=tot>=20000;
   const streak=getLeagueStreak(custId);
-  return [
+  const quests=[
     {icon:'📦',name:'FREQUENT BUYER',desc:'Place at least 2 orders this cycle',
      pct:Math.min(100,Math.round(Math.min(cnt,2)/2*100)),done:q1d,color:'#818CF8',
      progLbl:`${cnt} / 2 ORDERS`,tip:q1d?'MISSION COMPLETE ✓':`${2-cnt} ORDER${2-cnt>1?'S':''} REMAINING`},
@@ -3676,6 +3758,47 @@ function computeQuests(custId,curMo,prevMo){
      progLbl:q3d?`${prevMo} + ${curMo} — ${ct.full}`:(prevMo&&ptot>0?`${pt.emoji}${pt.name} → ${ct.emoji}${ct.name}`:`ACTIVE IN ${curMo||'CURRENT'}`),
      tip:q3d?'MISSION COMPLETE ✓':(prevMo&&ptot>0&&tot>0?`RANKS DIFFER — HOLD ${ct.name}`:'NEED DATA IN BOTH CYCLES')},
   ];
+  missions.forEach(m=>{
+
+    if(!m.active)
+        return;
+
+    const p=computeMissionProgress(
+        custId,
+        m,
+        curMo,
+        prevMo
+    );
+
+const pct=p.target
+    ?Math.min(
+        100,
+        Math.round((p.current/p.target)*100)
+      )
+    :0;
+    quests.push({
+
+        icon:m.icon||"🎯",
+
+        name:m.title,
+
+        desc:m.description,
+
+        pct,
+
+        done:p.completed,
+
+        color:m.color||"#00E5FF",
+
+        progLbl:`${Math.round(p.current)} / ${p.target}`,
+
+        tip:p.completed
+            ?"MISSION COMPLETE ✓"
+            :`${Math.max(0,Math.round(p.target-p.current))} REMAINING`
+
+    });
+
+});
   return missions.filter(m=>{
 
     if(m.id.startsWith("M"))
