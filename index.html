@@ -3758,8 +3758,7 @@ function computeQuests(custId,curMo,prevMo){
      progLbl:q3d?`${prevMo} + ${curMo} — ${ct.full}`:(prevMo&&ptot>0?`${pt.emoji}${pt.name} → ${ct.emoji}${ct.name}`:`ACTIVE IN ${curMo||'CURRENT'}`),
      tip:q3d?'MISSION COMPLETE ✓':(prevMo&&ptot>0&&tot>0?`RANKS DIFFER — HOLD ${ct.name}`:'NEED DATA IN BOTH CYCLES')},
   ];
-  missions.forEach(m=>{
-
+(missions || []).forEach(m=>{
     if(!m.active)
         return;
 
@@ -4686,7 +4685,7 @@ function memberSince(d){
 const _clCache = {};   // { custId: { entries:[], ts:0 } }
 let   _clPending = {}; // custId → Promise  (dedup in-flight fetches)
 let   _clDialled = {}; // custId → { id, ts }  (pending "Dialled" entry waiting for outcome)
-
+let missions = [];
 /* ── helpers ── */
 function fmtCallTs(iso){
   const d=new Date(iso);
