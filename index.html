@@ -3571,10 +3571,21 @@ function showDetailById(custId){
   const curMo=allMonths[0]||'',prevMo=allMonths[1]||'';
 
   /* O(1) slice from index instead of O(n) filter */
-  const cOrds=Idx.custOrders.get(k)||[];
-  const cRcpts=Idx.custRcpts.get(k)||[];
-  const mAmt=mOrds.reduce((s,o)=>s+o.amount,0),pAmt=pOrds.reduce((s,o)=>s+o.amount,0);
-  const mCnt=mOrds.length,aAmt=cOrds.reduce((s,o)=>s+o.amount,0),aCnt=cOrds.length;
+  /* O(1) slice from index instead of O(n) filter */
+const cOrds = Idx.custOrders.get(k) || [];
+const cRcpts = Idx.custRcpts.get(k) || [];
+
+/* Monthly orders */
+const mOrds = cOrds.filter(o => o.month === curMo);
+const pOrds = cOrds.filter(o => o.month === prevMo);
+
+/* Monthly totals */
+const mAmt = mOrds.reduce((s,o)=>s+o.amount,0);
+const pAmt = pOrds.reduce((s,o)=>s+o.amount,0);
+
+const mCnt = mOrds.length;
+const aAmt = cOrds.reduce((s,o)=>s+o.amount,0);
+const aCnt = cOrds.length;
   const tier=getTier(mAmt),av=ini(c.name);
   const ct=getTier(mAmt),pt=getTier(pAmt);
   const tierChg=tRank(ct)!==tRank(pt)?(tRank(ct)>tRank(pt)?'up':'dn'):null;
