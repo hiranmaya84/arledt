@@ -2608,7 +2608,13 @@ async function loadData(){
   document.getElementById('err-bar').style.display='none';
   ['dashboard','details','detail'].forEach(p=>document.getElementById('page-'+p).classList.remove('on'));
   try{
-    const[cr,or,rr,ofr]=await Promise.all([fetchSheet('1_CUSTOMERS'),fetchSheet('2_ORDERS'),fetchSheet('12_RECEIPTS'),fetchSheet('13_OFFER').catch(()=>[])]);
+    const [cr,or,mr,rr,ofr]=await Promise.all([
+    fetchSheet('1_CUSTOMERS'),
+    fetchSheet('2_ORDERS'),
+    fetchSheet('6_MISSIONS'),
+    fetchSheet('12_RECEIPTS'),
+    fetchSheet('13_OFFER').catch(()=>[])
+]);
     const cm=await fetchSheet('COLUMN_MASTER');
 
     /* ── 1_CUSTOMERS: resolve columns by header, fallback to known index ── */
@@ -3758,46 +3764,7 @@ function computeQuests(custId,curMo,prevMo){
      progLbl:q3d?`${prevMo} + ${curMo} — ${ct.full}`:(prevMo&&ptot>0?`${pt.emoji}${pt.name} → ${ct.emoji}${ct.name}`:`ACTIVE IN ${curMo||'CURRENT'}`),
      tip:q3d?'MISSION COMPLETE ✓':(prevMo&&ptot>0&&tot>0?`RANKS DIFFER — HOLD ${ct.name}`:'NEED DATA IN BOTH CYCLES')},
   ];
-(missions || []).forEach(m=>{
-    if(!m.active)
-        return;
 
-    const p=computeMissionProgress(
-        custId,
-        m,
-        curMo,
-        prevMo
-    );
-
-const pct=p.target
-    ?Math.min(
-        100,
-        Math.round((p.current/p.target)*100)
-      )
-    :0;
-    quests.push({
-
-        icon:m.icon||"🎯",
-
-        name:m.title,
-
-        desc:m.description,
-
-        pct,
-
-        done:p.completed,
-
-        color:m.color||"#00E5FF",
-
-        progLbl:`${Math.round(p.current)} / ${p.target}`,
-
-        tip:p.completed
-            ?"MISSION COMPLETE ✓"
-            :`${Math.max(0,Math.round(p.target-p.current))} REMAINING`
-
-    });
-
-});
   return missions.filter(m=>{
 
     if(m.id.startsWith("M"))
@@ -4685,7 +4652,6 @@ function memberSince(d){
 const _clCache = {};   // { custId: { entries:[], ts:0 } }
 let   _clPending = {}; // custId → Promise  (dedup in-flight fetches)
 let   _clDialled = {}; // custId → { id, ts }  (pending "Dialled" entry waiting for outcome)
-let missions = [];
 /* ── helpers ── */
 function fmtCallTs(iso){
   const d=new Date(iso);
