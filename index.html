@@ -3770,8 +3770,8 @@ function computeQuests(custId,curMo,prevMo){
     if(m.id.startsWith("M"))
         return true;
 
-    if(!m.id.startsWith("L"))
-        return true;
+if(m.type==="LEAGUE")
+  return true;
 
     if(!streak.tier)
         return false;
