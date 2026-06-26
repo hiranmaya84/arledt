@@ -1753,49 +1753,60 @@ function renderBadgeRow(custId,opts){
 function fmtINR(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
 
 /* ═══════ OFFERS HELPERS ═══════ */
-function parseOfferDate(raw){
-  if(!raw)return null;
-  const s=String(raw).trim();
-  if(!s||s==='-'||s==='—')return null;
+function parseOfferDate(str){
 
-  /* 1. gviz typed-Date cell: Date(yyyy,m,d)  — months are 0-based in gviz */
-  const gv=s.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)$/);
-  if(gv)return new Date(+gv[1],+gv[2],+gv[3]);
+    if(!str) return null;
 
-  /* 2. ISO: yyyy-mm-dd */
-  const iso=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-  if(iso)return new Date(+iso[1],+iso[2]-1,+iso[3]);
+    str=String(str).trim();
 
-  /* 3. Full slash-separated: dd/mm/yyyy or m/d/yyyy
-     If first number > 12 → must be day (dd/mm/yyyy)
-     If second number > 12 → must be day (mm/dd/yyyy US gviz)
-     Both ≤ 12 → assume dd/mm (Indian) */
-  const sl=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if(sl){
-    const a=+sl[1],b=+sl[2],yr=+sl[3];
-    if(a>12)          return new Date(yr,b-1,a);
-    if(b>12)          return new Date(yr,a-1,b);
-    return new Date(yr,b-1,a);
-  }
+    // Excel serial number
+    if(/^\d+$/.test(str)){
+        return new Date((Number(str)-25569)*86400000);
+    }
 
-  /* 4. Dash: dd-mm-yyyy */
-  const dm=s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
-  if(dm)return new Date(+dm[3],+dm[2]-1,+dm[1]);
+    // DD-MM-YYYY or DD-MM-YY
+    let m=str.match(/^(\d{1,2})-(\d{1,2})-(\d{2,4})$/);
+    if(m){
+        let d=+m[1], mo=+m[2]-1, y=+m[3];
+        if(y<100) y+=2000;
+        return new Date(y,mo,d);
+    }
 
-  /* 5. Year-less: dd/mm or d/m — assume current year */
-  const curYr=new Date().getFullYear();
-  const yl=s.match(/^(\d{1,2})\/(\d{1,2})$/);
-  if(yl){
-    const a=+yl[1],b=+yl[2];
-    if(a>12)return new Date(curYr,b-1,a);
-    if(b>12)return new Date(curYr,a-1,b);
-    return new Date(curYr,b-1,a);
-  }
-  const yld=s.match(/^(\d{1,2})-(\d{1,2})$/);
-  if(yld)return new Date(curYr,+yld[2]-1,+yld[1]);
+    // DD/MM/YYYY or DD/MM/YY
+    m=str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if(m){
 
-  console.warn('[Offers] unrecognised date format:',JSON.stringify(s));
-  return null;
+        let a=+m[1];
+        let b=+m[2];
+        let y=+m[3];
+        if(y<100) y+=2000;
+
+        // If first part >12, definitely DD/MM
+        if(a>12){
+            return new Date(y,b-1,a);
+        }
+
+        // If second part >12, definitely MM/DD
+        if(b>12){
+            return new Date(y,a-1,b);
+        }
+
+        // Ambiguous -> assume DD/MM
+        return new Date(y,b-1,a);
+    }
+
+    // YYYY-MM-DD
+    m=str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if(m){
+        return new Date(+m[1],+m[2]-1,+m[3]);
+    }
+
+    // Native parser
+    const d=new Date(str);
+    if(!isNaN(d)) return d;
+
+    console.warn("[Offers] unrecognised date format:",str);
+    return null;
 }
 
 function fmtOfferDate(d){
