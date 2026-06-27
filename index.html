@@ -2552,7 +2552,7 @@ for(let i=1;i<cm.length;i++){
       Number(r[11]||0)
 
  });
-
+    }
     allMonths=[...new Set([...orders.map(o=>o.month),...receipts.map(r=>r.month)].filter(Boolean))].sort((a,b)=>moVal(b)-moVal(a));
 
     /* ── V12: Build O(1) indexes immediately after all data is parsed ── */
